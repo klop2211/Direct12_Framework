@@ -23,8 +23,6 @@ void GameFramework::Initialize()
 
 void GameFramework::FrameAdvance()
 {
-	
-
 	//涝仿 贸府
 
 	//面倒 贸府
