@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "GameFramework.h"
+#include "Timer.h"
+#include "Scene.h"
+#include "DefaultScene.h"
 
 GameFramework* GameFramework::game_framework_ = nullptr;
 
@@ -15,23 +18,92 @@ GameFramework::~GameFramework()
 
 void GameFramework::Initialize()
 {
+	// direct 디바이스 생성 및 초기화
 	CreateDirect3DDevice();
 	CreateCommandQueueAndList();
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateSwapChain();
+
+	timer_.reset(new Timer);
+	scene_.reset(new DefaultScene);
 }
 
 void GameFramework::FrameAdvance()
 {
+	timer_->Tick(60.f);
+
 	//입력 처리
 
-	//충돌 처리
+	//현재 씬 업데이트(충돌처리, 업데이트, 애니메이션)
+	scene_->Update(timer_->elapsed_time());
 
-	//업데이트
+	//렌더 사전 준비
+	HRESULT hresult = d3d12_command_allocator_->Reset();
+	hresult = d3d12_command_list_->Reset(d3d12_command_allocator_.Get(), NULL);
 
-	//애니메이션
+	D3D12_RESOURCE_BARRIER d3d12_resource_barrier;
+	::ZeroMemory(&d3d12_resource_barrier, sizeof(D3D12_RESOURCE_BARRIER));
+	d3d12_resource_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	d3d12_resource_barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	d3d12_resource_barrier.Transition.pResource = d3d12_swap_chain_back_buffers_[swap_chain_buffer_current_index_].Get();
+	d3d12_resource_barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	d3d12_resource_barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	d3d12_resource_barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	d3d12_command_list_->ResourceBarrier(1, &d3d12_resource_barrier);
 
-	//렌더
+	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = d3d12_render_target_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
+	d3dRtvCPUDescriptorHandle.ptr += (swap_chain_buffer_current_index_ * rtv_descriptor_increment_size_);
+
+	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	d3d12_command_list_->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = d3d12_depth_stencil_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
+	d3d12_command_list_->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+
+	d3d12_command_list_->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
+
+	//현재 씬 렌더
+	scene_->Render(d3d12_command_list_.Get());
+
+	//렌더 마무리 작업
+	d3d12_resource_barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	d3d12_resource_barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	d3d12_resource_barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	d3d12_command_list_->ResourceBarrier(1, &d3d12_resource_barrier);
+
+	hresult = d3d12_command_list_->Close();
+
+	ID3D12CommandList* ppd3dCommandLists[] = { d3d12_command_list_.Get()};
+	d3d12_command_queue_->ExecuteCommandLists(1, ppd3dCommandLists);
+
+	WaitForGpuComplete();
+
+	dxgi_swap_chain_->Present(0, 0);
+
+	MoveToNextFrame();
+
+	// GameName (60 FPS)
+	::SetWindowText(hwnd_, (game_name_ + L" (" + std::to_wstring(timer_->current_frame_rate()) + L" FPS)").c_str());
+
+}
+
+void GameFramework::WaitForGpuComplete()
+{
+	const UINT64 fence_value = ++fence_values_[swap_chain_buffer_current_index_];
+	HRESULT hresult = d3d12_command_queue_->Signal(d3d12_fence_.Get(), fence_value);
+
+	if (d3d12_fence_->GetCompletedValue() < fence_value)
+	{
+		hresult = d3d12_fence_->SetEventOnCompletion(fence_value, fence_event_handle_);
+		::WaitForSingleObject(fence_event_handle_, INFINITE);
+	}
+}
+
+void GameFramework::MoveToNextFrame()
+{
+	swap_chain_buffer_current_index_ = dxgi_swap_chain_->GetCurrentBackBufferIndex();
+
+	WaitForGpuComplete();
 }
 
 void GameFramework::CreateDirect3DDevice()
@@ -116,11 +188,11 @@ void GameFramework::CreateRtvAndDsvDescriptorHeaps()
 	d3d12_descriptor_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	d3d12_descriptor_heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3d12_descriptor_heap_desc.NodeMask = 0;
-	HRESULT hResult = d3d12_device_->CreateDescriptorHeap(&d3d12_descriptor_heap_desc, __uuidof(ID3D12DescriptorHeap), (void**)&d3d12_render_target_descriptor_heap_);
+	HRESULT hresult = d3d12_device_->CreateDescriptorHeap(&d3d12_descriptor_heap_desc, __uuidof(ID3D12DescriptorHeap), (void**)(d3d12_render_target_descriptor_heap_.GetAddressOf()));
 
 	d3d12_descriptor_heap_desc.NumDescriptors = 1;
 	d3d12_descriptor_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	hResult = d3d12_device_->CreateDescriptorHeap(&d3d12_descriptor_heap_desc, __uuidof(ID3D12DescriptorHeap), (void**)&d3d12_depth_stencil_descriptor_heap_);
+	hresult = d3d12_device_->CreateDescriptorHeap(&d3d12_descriptor_heap_desc, __uuidof(ID3D12DescriptorHeap), (void**)(d3d12_depth_stencil_descriptor_heap_.GetAddressOf()));
 
 }
 
@@ -146,7 +218,7 @@ void GameFramework::CreateSwapChain()
 	dxgi_swap_chain_desc.Windowed = TRUE;
 	dxgi_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	HRESULT hResult = dxgi_factory_->CreateSwapChain(d3d12_command_queue_.Get(), &dxgi_swap_chain_desc, (IDXGISwapChain**)dxgi_swap_chain_.GetAddressOf());
+	HRESULT hresult = dxgi_factory_->CreateSwapChain(d3d12_command_queue_.Get(), &dxgi_swap_chain_desc, (IDXGISwapChain**)dxgi_swap_chain_.GetAddressOf());
 
 	if (!dxgi_swap_chain_)
 	{
@@ -155,6 +227,6 @@ void GameFramework::CreateSwapChain()
 		return;
 	}
 
-	hResult = dxgi_factory_->MakeWindowAssociation(hwnd_, DXGI_MWA_NO_ALT_ENTER);
+	hresult = dxgi_factory_->MakeWindowAssociation(hwnd_, DXGI_MWA_NO_ALT_ENTER);
 	swap_chain_buffer_current_index_ = dxgi_swap_chain_->GetCurrentBackBufferIndex();
 }

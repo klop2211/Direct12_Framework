@@ -13,11 +13,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="GameFramework">
+    <Filter Include="Framework">
+      <UniqueIdentifier>{ec9744e1-d8e0-458a-aaff-a0e79feeb240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Timer">
+      <UniqueIdentifier>{e0f4ec94-7602-42e4-9108-d883b98b5e5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\GameFramework">
       <UniqueIdentifier>{9e1206ef-9fab-4be7-81aa-e8b3113acca8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Timer">
-      <UniqueIdentifier>{e0f4ec94-7602-42e4-9108-d883b98b5e5d}</UniqueIdentifier>
+    <Filter Include="Framework\Scene">
+      <UniqueIdentifier>{c9083ffe-f952-444d-aec0-45fcdc14c762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DefaultScene">
+      <UniqueIdentifier>{2782d5dc-0330-43a5-b889-6d2929213b9e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,10 +49,16 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameFramework.h">
-      <Filter>GameFramework</Filter>
+      <Filter>Framework\GameFramework</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>Timer</Filter>
+      <Filter>Framework\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Framework\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultScene.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -60,10 +75,16 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameFramework.cpp">
-      <Filter>GameFramework</Filter>
+      <Filter>Framework\GameFramework</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>Timer</Filter>
+      <Filter>Framework\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Framework\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultScene.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

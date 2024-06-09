@@ -1,4 +1,8 @@
 #pragma once
+
+class Timer;
+class Scene;
+
 class GameFramework
 {
 public:
@@ -8,6 +12,11 @@ public:
 	void Initialize();
 
 	void FrameAdvance();
+
+	void WaitForGpuComplete();
+
+	void MoveToNextFrame();
+
 
 private:
 	void CreateDirect3DDevice();
@@ -34,9 +43,12 @@ private:
 	ComPtr<ID3D12GraphicsCommandList> d3d12_command_list_;
 
 	static const UINT swap_chain_buffer_count_ = 2;
-	ComPtr<ID3D12DescriptorHeap> d3d12_render_target_descriptor_heap_;
 	UINT swap_chain_buffer_current_index_;
 
+	std::array<ComPtr<ID3D12Resource>, swap_chain_buffer_count_> d3d12_swap_chain_back_buffers_;
+	ComPtr<ID3D12DescriptorHeap> d3d12_render_target_descriptor_heap_;
+
+	ComPtr<ID3D12Resource> d3d12_depth_stencil_buffer_;
 	ComPtr<ID3D12DescriptorHeap> d3d12_depth_stencil_descriptor_heap_;
 
 	std::array<UINT64, swap_chain_buffer_count_> fence_values_;
@@ -49,5 +61,12 @@ private:
 
 	UINT msaa_4x_quality_levels_;
 	bool msaa_4x_enable_;
+
+	std::unique_ptr<Timer> timer_;
+
+	std::unique_ptr<Scene> scene_;
+
+	std::wstring game_name_ = L"framework";
+	std::wstring str_frame_rate_;
 };
 

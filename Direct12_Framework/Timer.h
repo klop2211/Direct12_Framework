@@ -9,9 +9,12 @@ public:
 	Timer();
 	~Timer() {}
 
+	int current_frame_rate() const { return current_frame_rate_; }
+	float elapsed_time() const { return elapsed_time_; }
+
 	//GameFramework의 FrameAdvence함수에 맨 처음 호출 되며 매개변수로 fps를 설정할 수 있다. \
 	fps 상한을 없애려면 0이하의 값을 넣으면 된다.
-	void Tick(float frame_per_second);
+	void Tick(float frame_per_second = 0.f);
 
 private:
 	// 카운터 수 * time_scale = x 초

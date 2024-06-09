@@ -53,15 +53,28 @@ void Timer::Tick(float frame_per_second)
 		frame_time_[0] = elapsed_time;
 		if (sample_count_ < kMaxSampleCount)
 		{
-			sample_count_++;
+			++sample_count_;
 		}
 	}
 
-	frame_per_second_++;
+	//FPS 측정
+	++frame_per_second_;
 	fps_elapsed_time_ += elapsed_time;
 	if (fps_elapsed_time_ > 1.f)
 	{
 		current_frame_rate_ = frame_per_second_;
+		frame_per_second_ = 0;
+		fps_elapsed_time_ = 0.f;
+	}
 
+	// elapsed_time 계산
+	elapsed_time_ = 0.f;
+	for (int i = 0; i < sample_count_; ++i)
+	{
+		elapsed_time_ += frame_time_[i];
+	}
+	if (sample_count_ > 0)
+	{
+		elapsed_time_ /= sample_count_;
 	}
 }
