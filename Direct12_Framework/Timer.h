@@ -1,12 +1,17 @@
 #pragma once
 
-const ULONG MAX_SAMPLE_COUNT = 50; // Maximum frame time sample count
+const ULONG kMaxSampleCount = 50; // Maximum frame time sample count
 
+// 시간을 측정하고 관리하는 클래스
 class Timer
 {
 public:
 	Timer();
 	~Timer() {}
+
+	//GameFramework의 FrameAdvence함수에 맨 처음 호출 되며 매개변수로 fps를 설정할 수 있다. \
+	fps 상한을 없애려면 0이하의 값을 넣으면 된다.
+	void Tick(float frame_per_second);
 
 private:
 	// 카운터 수 * time_scale = x 초
@@ -22,13 +27,13 @@ private:
 				
 	__int64	performance_frequency_per_second_;
 				
-	float frame_time_[MAX_SAMPLE_COUNT];
+	std::array<float, kMaxSampleCount> frame_time_;
 	ULONG sample_count_;
-				
+
 	unsigned long current_frame_rate_;
-	unsigned long frame_per_second;
+	unsigned long frame_per_second_;
 	float fps_elapsed_time_;
-				
+	
 	bool is_stop_;
 
 };
