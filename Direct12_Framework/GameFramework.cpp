@@ -24,6 +24,9 @@ void GameFramework::Initialize()
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateSwapChain();
 
+	CreateRenderTargetViews();
+	CreateDepthStencilView();
+
 	timer_.reset(new Timer);
 	scene_.reset(new DefaultScene);
 }
@@ -51,16 +54,16 @@ void GameFramework::FrameAdvance()
 	d3d12_resource_barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	d3d12_command_list_->ResourceBarrier(1, &d3d12_resource_barrier);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = d3d12_render_target_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
-	d3dRtvCPUDescriptorHandle.ptr += (swap_chain_buffer_current_index_ * rtv_descriptor_increment_size_);
+	D3D12_CPU_DESCRIPTOR_HANDLE d3d12_rtv_cpu_descriptor_handle = d3d12_render_target_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
+	d3d12_rtv_cpu_descriptor_handle.ptr += (swap_chain_buffer_current_index_ * rtv_descriptor_increment_size_);
 
 	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	d3d12_command_list_->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
+	d3d12_command_list_->ClearRenderTargetView(d3d12_rtv_cpu_descriptor_handle, pfClearColor/*Colors::Azure*/, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = d3d12_depth_stencil_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
 	d3d12_command_list_->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 
-	d3d12_command_list_->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
+	d3d12_command_list_->OMSetRenderTargets(1, &d3d12_rtv_cpu_descriptor_handle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	//ÇöÀç ¾À ·»´õ
 	scene_->Render(d3d12_command_list_.Get());
@@ -188,11 +191,17 @@ void GameFramework::CreateRtvAndDsvDescriptorHeaps()
 	d3d12_descriptor_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	d3d12_descriptor_heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3d12_descriptor_heap_desc.NodeMask = 0;
-	HRESULT hresult = d3d12_device_->CreateDescriptorHeap(&d3d12_descriptor_heap_desc, __uuidof(ID3D12DescriptorHeap), (void**)(d3d12_render_target_descriptor_heap_.GetAddressOf()));
+	HRESULT hresult = d3d12_device_->CreateDescriptorHeap(
+		&d3d12_descriptor_heap_desc, 
+		__uuidof(ID3D12DescriptorHeap), 
+		(void**)(d3d12_render_target_descriptor_heap_.GetAddressOf()));
 
 	d3d12_descriptor_heap_desc.NumDescriptors = 1;
 	d3d12_descriptor_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	hresult = d3d12_device_->CreateDescriptorHeap(&d3d12_descriptor_heap_desc, __uuidof(ID3D12DescriptorHeap), (void**)(d3d12_depth_stencil_descriptor_heap_.GetAddressOf()));
+	hresult = d3d12_device_->CreateDescriptorHeap(
+		&d3d12_descriptor_heap_desc, 
+		__uuidof(ID3D12DescriptorHeap), 
+		(void**)(d3d12_depth_stencil_descriptor_heap_.GetAddressOf()));
 
 }
 
@@ -229,4 +238,63 @@ void GameFramework::CreateSwapChain()
 
 	hresult = dxgi_factory_->MakeWindowAssociation(hwnd_, DXGI_MWA_NO_ALT_ENTER);
 	swap_chain_buffer_current_index_ = dxgi_swap_chain_->GetCurrentBackBufferIndex();
+}
+
+void GameFramework::CreateRenderTargetViews()
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE d3d12_rtv_cpu_descriptor_handle = d3d12_render_target_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
+	for (UINT i = 0; i < swap_chain_buffer_count_; ++i)
+	{
+		dxgi_swap_chain_->GetBuffer(i, __uuidof(ID3D12Resource), (void**)d3d12_swap_chain_back_buffers_[i].GetAddressOf());
+		d3d12_device_->CreateRenderTargetView(d3d12_swap_chain_back_buffers_[i].Get(), NULL, d3d12_rtv_cpu_descriptor_handle);
+		d3d12_rtv_cpu_descriptor_handle.ptr += rtv_descriptor_increment_size_;
+	}
+}
+
+void GameFramework::CreateDepthStencilView()
+{
+	D3D12_RESOURCE_DESC d3d12_resource_desc;
+	d3d12_resource_desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	d3d12_resource_desc.Alignment = 0;
+	d3d12_resource_desc.Width = client_width_;
+	d3d12_resource_desc.Height = client_height_;
+	d3d12_resource_desc.DepthOrArraySize = 1;
+	d3d12_resource_desc.MipLevels = 1;
+	d3d12_resource_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	d3d12_resource_desc.SampleDesc.Count = (msaa_4x_enable_) ? 4 : 1;
+	d3d12_resource_desc.SampleDesc.Quality = (msaa_4x_enable_) ? (msaa_4x_quality_levels_ - 1) : 0;
+	d3d12_resource_desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	d3d12_resource_desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+	D3D12_HEAP_PROPERTIES d3d12_heap_properties;
+	::ZeroMemory(&d3d12_heap_properties, sizeof(D3D12_HEAP_PROPERTIES));
+	d3d12_heap_properties.Type = D3D12_HEAP_TYPE_DEFAULT;
+	d3d12_heap_properties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+	d3d12_heap_properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+	d3d12_heap_properties.CreationNodeMask = 1;
+	d3d12_heap_properties.VisibleNodeMask = 1;
+
+	D3D12_CLEAR_VALUE d3d12_clear_value;
+	d3d12_clear_value.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	d3d12_clear_value.DepthStencil.Depth = 1.0f;
+	d3d12_clear_value.DepthStencil.Stencil = 0;
+
+	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = d3d12_depth_stencil_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
+	d3d12_device_->CreateCommittedResource(
+		&d3d12_heap_properties, 
+		D3D12_HEAP_FLAG_NONE, 
+		&d3d12_resource_desc, 
+		D3D12_RESOURCE_STATE_DEPTH_WRITE, 
+		&d3d12_clear_value, 
+		__uuidof(ID3D12Resource), 
+		(void**)d3d12_depth_stencil_buffer_.GetAddressOf());
+
+	D3D12_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
+	::ZeroMemory(&d3dDepthStencilViewDesc, sizeof(D3D12_DEPTH_STENCIL_VIEW_DESC));
+	d3dDepthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	d3dDepthStencilViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	d3dDepthStencilViewDesc.Flags = D3D12_DSV_FLAG_NONE;
+
+	d3d12_device_->CreateDepthStencilView(d3d12_depth_stencil_buffer_.Get(), &d3dDepthStencilViewDesc, d3dDsvCPUDescriptorHandle);
+
 }

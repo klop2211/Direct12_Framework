@@ -58,6 +58,9 @@
       <Filter>Framework\Scene</Filter>
     </ClInclude>
     <ClInclude Include="DefaultScene.h">
+      <Filter>DefaultScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -84,6 +87,9 @@
       <Filter>Framework\Scene</Filter>
     </ClCompile>
     <ClCompile Include="DefaultScene.cpp">
+      <Filter>DefaultScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

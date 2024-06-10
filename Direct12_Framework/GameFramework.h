@@ -24,6 +24,9 @@ private:
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateSwapChain();
 
+	void CreateRenderTargetViews();
+	void CreateDepthStencilView();
+
 private:
 	static GameFramework* game_framework_;
 

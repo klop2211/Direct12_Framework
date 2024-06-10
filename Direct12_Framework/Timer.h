@@ -37,7 +37,7 @@ private:
 	unsigned long frame_per_second_;
 	float fps_elapsed_time_;
 	
-	bool is_stop_;
+	bool is_stop_ = false;
 
 };
 
