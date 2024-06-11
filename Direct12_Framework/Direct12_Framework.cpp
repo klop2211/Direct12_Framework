@@ -109,13 +109,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU |
+   DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
        WS_BORDER;
    RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
 
    //실제 클라이언트 창의 크기를 rc로 조정 해주는 함수
    AdjustWindowRect(&rc, dwStyle, FALSE);
-   hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle,
       1920 / 2 - FRAME_BUFFER_WIDTH / 2, 1080 / 2 - FRAME_BUFFER_HEIGHT / 2, rc.right, rc.bottom, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)

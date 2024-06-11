@@ -2,6 +2,7 @@
 
 class Timer;
 class Scene;
+class InputMappingContext;
 
 class GameFramework
 {
@@ -13,10 +14,9 @@ public:
 
 	void FrameAdvance();
 
-	void WaitForGpuComplete();
+	void ChangeSwapChainState();
 
-	void MoveToNextFrame();
-
+	static GameFramework* Instance() { return game_framework_; }
 
 private:
 	void CreateDirect3DDevice();
@@ -26,6 +26,13 @@ private:
 
 	void CreateRenderTargetViews();
 	void CreateDepthStencilView();
+
+	void WaitForGpuComplete();
+	void MoveToNextFrame();
+
+	void ResizeBackBuffer();
+
+	void ProcessInput();
 
 private:
 	static GameFramework* game_framework_;
@@ -68,6 +75,8 @@ private:
 	std::unique_ptr<Timer> timer_;
 
 	std::unique_ptr<Scene> scene_;
+
+	std::unique_ptr<InputMappingContext> input_mapping_context_ = nullptr;
 
 	std::wstring game_name_ = L"framework";
 	std::wstring str_frame_rate_;

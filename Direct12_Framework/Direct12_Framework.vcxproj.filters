@@ -28,6 +28,12 @@
     <Filter Include="DefaultScene">
       <UniqueIdentifier>{2782d5dc-0330-43a5-b889-6d2929213b9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\InputMappingContext">
+      <UniqueIdentifier>{1146c1f6-d105-49cd-a5a4-be3bde9410c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\InputAction">
+      <UniqueIdentifier>{6942663c-7d6b-45e8-94d8-65199227469a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -63,6 +69,15 @@
     <ClInclude Include="Object.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="InputMappingContext.h">
+      <Filter>Framework\InputMappingContext</Filter>
+    </ClInclude>
+    <ClInclude Include="IMCTest.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InputAction.h">
+      <Filter>Framework\InputAction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct12_Framework.cpp">
@@ -91,6 +106,15 @@
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InputMappingContext.cpp">
+      <Filter>Framework\InputMappingContext</Filter>
+    </ClCompile>
+    <ClCompile Include="IMCTest.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InputAction.cpp">
+      <Filter>Framework\InputAction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,8 @@
 #include "Timer.h"
 #include "Scene.h"
 #include "DefaultScene.h"
+#include "InputMappingContext.h"
+#include "IMCTest.h"
 
 GameFramework* GameFramework::game_framework_ = nullptr;
 
@@ -29,6 +31,7 @@ void GameFramework::Initialize()
 
 	timer_.reset(new Timer);
 	scene_.reset(new DefaultScene);
+	input_mapping_context_.reset(new IMCTest());
 }
 
 void GameFramework::FrameAdvance()
@@ -36,6 +39,7 @@ void GameFramework::FrameAdvance()
 	timer_->Tick(60.f);
 
 	//입력 처리
+	ProcessInput();
 
 	//현재 씬 업데이트(충돌처리, 업데이트, 애니메이션)
 	scene_->Update(timer_->elapsed_time());
@@ -90,6 +94,26 @@ void GameFramework::FrameAdvance()
 
 }
 
+void GameFramework::ChangeSwapChainState()
+{
+	BOOL is_full_screen_state = false;
+	dxgi_swap_chain_->GetFullscreenState(&is_full_screen_state, nullptr);
+	dxgi_swap_chain_->SetFullscreenState(!is_full_screen_state, nullptr);
+
+	DXGI_MODE_DESC dxgi_target_parameters;
+	dxgi_target_parameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	dxgi_target_parameters.Width = client_width_;
+	dxgi_target_parameters.Height = client_height_;
+	dxgi_target_parameters.RefreshRate.Numerator = 60;
+	dxgi_target_parameters.RefreshRate.Denominator = 1;
+	dxgi_target_parameters.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	dxgi_target_parameters.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	dxgi_swap_chain_->ResizeTarget(&dxgi_target_parameters);
+
+	ResizeBackBuffer();
+
+}
+
 void GameFramework::WaitForGpuComplete()
 {
 	const UINT64 fence_value = ++fence_values_[swap_chain_buffer_current_index_];
@@ -107,6 +131,58 @@ void GameFramework::MoveToNextFrame()
 	swap_chain_buffer_current_index_ = dxgi_swap_chain_->GetCurrentBackBufferIndex();
 
 	WaitForGpuComplete();
+}
+
+void GameFramework::ResizeBackBuffer()
+{
+	WaitForGpuComplete();
+	d3d12_command_list_->Reset(d3d12_command_allocator_.Get(), nullptr);
+
+	// 기존 back buffer 리셋(삭제)
+	for (auto& swap_chain_buffer : d3d12_swap_chain_back_buffers_)
+	{
+		swap_chain_buffer.Reset();
+	}
+	d3d12_depth_stencil_buffer_.Reset();
+
+	// 스왑체인 resize
+	DXGI_SWAP_CHAIN_DESC dxgi_swap_chain_desc;
+	dxgi_swap_chain_->GetDesc(&dxgi_swap_chain_desc);
+	dxgi_swap_chain_->ResizeBuffers(
+		swap_chain_buffer_count_, 
+		client_width_, client_height_, 
+		dxgi_swap_chain_desc.BufferDesc.Format, 
+		dxgi_swap_chain_desc.Flags);
+
+	swap_chain_buffer_current_index_ = 0;
+
+	// back buffer 재생성
+	CreateRenderTargetViews();
+	CreateDepthStencilView();
+
+	d3d12_command_list_->Close();
+
+	ID3D12CommandList* ppd3dCommandLists[] = { d3d12_command_list_.Get() };
+	d3d12_command_queue_->ExecuteCommandLists(1, ppd3dCommandLists);
+
+	WaitForGpuComplete();
+
+}
+
+void GameFramework::ProcessInput()
+{
+	// 현재 프레임 워크에 등록된 IMC 실행
+	if (input_mapping_context_)
+	{
+		input_mapping_context_->UpdateInputValue();
+		input_mapping_context_->HandleInput();
+	}
+
+	// 개발 편의를 위한 예외 키
+	if (GetAsyncKeyState(VK_ESCAPE) & 0x8000)
+	{
+		PostQuitMessage(0);
+	}
 }
 
 void GameFramework::CreateDirect3DDevice()

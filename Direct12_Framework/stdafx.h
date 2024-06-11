@@ -120,6 +120,12 @@ inline bool IsEqual(float fA, float fB) { return(::IsZero(fA - fB)); }
 inline float InverseSqrt(float fValue) { return 1.0f / sqrtf(fValue); }
 inline void Swap(float* pfS, float* pfT) { float fTemp = *pfS; *pfS = *pfT; *pfT = fTemp; }
 
+// POINT 타입 관련 math
+inline POINT operator-(const POINT& lhs, const POINT& rhs) 
+{ 
+	return POINT{ lhs.x - rhs.x, lhs.y - rhs.y };
+}
+
 namespace Vector3
 {
 	inline XMFLOAT3 XMVectorToFloat3(XMVECTOR& xmvVector)
