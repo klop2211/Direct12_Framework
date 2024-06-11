@@ -34,6 +34,15 @@
     <Filter Include="Framework\InputAction">
       <UniqueIdentifier>{6942663c-7d6b-45e8-94d8-65199227469a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestClass">
+      <UniqueIdentifier>{26dc192e-2dcc-4790-9781-d8cdc2e6eb3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Mesh">
+      <UniqueIdentifier>{f4f63290-e174-4c5c-a1f0-8679dc382585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\SubMesh">
+      <UniqueIdentifier>{079f5f6c-36d3-4e32-95d0-998e17c7ef7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -72,11 +81,20 @@
     <ClInclude Include="InputMappingContext.h">
       <Filter>Framework\InputMappingContext</Filter>
     </ClInclude>
-    <ClInclude Include="IMCTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="InputAction.h">
       <Filter>Framework\InputAction</Filter>
+    </ClInclude>
+    <ClInclude Include="IMCTest.h">
+      <Filter>TestClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SubMesh.h">
+      <Filter>Framework\SubMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -110,11 +128,20 @@
     <ClCompile Include="InputMappingContext.cpp">
       <Filter>Framework\InputMappingContext</Filter>
     </ClCompile>
-    <ClCompile Include="IMCTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="InputAction.cpp">
       <Filter>Framework\InputAction</Filter>
+    </ClCompile>
+    <ClCompile Include="IMCTest.cpp">
+      <Filter>TestClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SubMesh.cpp">
+      <Filter>Framework\SubMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,5 +156,8 @@
     <Image Include="Direct12_Framework.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="StaticMeshShader.hlsl" />
   </ItemGroup>
 </Project>
