@@ -96,6 +96,9 @@
     <ClInclude Include="Shader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>Framework\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct12_Framework.cpp">
@@ -142,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>Framework\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
