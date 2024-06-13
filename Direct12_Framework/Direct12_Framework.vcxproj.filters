@@ -46,6 +46,9 @@
     <Filter Include="Framework\Shader">
       <UniqueIdentifier>{66072831-8985-4b0e-af22-8edb3cecd32c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Object">
+      <UniqueIdentifier>{4a6d3f63-9176-4a4a-8b38-6da09d72995b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -78,9 +81,6 @@
     <ClInclude Include="DefaultScene.h">
       <Filter>DefaultScene</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="InputMappingContext.h">
       <Filter>Framework\InputMappingContext</Filter>
     </ClInclude>
@@ -103,7 +103,10 @@
       <Filter>Framework\Shader</Filter>
     </ClInclude>
     <ClInclude Include="StaticMeshShader.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Framework\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Framework\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -131,9 +134,6 @@
     <ClCompile Include="DefaultScene.cpp">
       <Filter>DefaultScene</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="InputMappingContext.cpp">
       <Filter>Framework\InputMappingContext</Filter>
     </ClCompile>
@@ -156,7 +156,10 @@
       <Filter>Framework\Shader</Filter>
     </ClCompile>
     <ClCompile Include="StaticMeshShader.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Framework\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Framework\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
