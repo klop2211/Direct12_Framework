@@ -43,6 +43,9 @@
     <Filter Include="Framework\SubMesh">
       <UniqueIdentifier>{079f5f6c-36d3-4e32-95d0-998e17c7ef7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Shader">
+      <UniqueIdentifier>{66072831-8985-4b0e-af22-8edb3cecd32c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -93,11 +96,14 @@
     <ClInclude Include="SubMesh.h">
       <Filter>Framework\SubMesh</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="StaticMesh.h">
       <Filter>Framework\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Framework\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMeshShader.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,11 +149,14 @@
     <ClCompile Include="SubMesh.cpp">
       <Filter>Framework\SubMesh</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="StaticMesh.cpp">
       <Filter>Framework\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Framework\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMeshShader.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

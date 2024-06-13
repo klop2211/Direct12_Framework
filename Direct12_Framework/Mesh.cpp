@@ -19,7 +19,14 @@ void Mesh::AddRef(Object* object)
 
 void Mesh::Release(Object* object)
 {
-	//TODO: 릴리즈 한 오브젝트를 리스트에서 제거하는 코드 추가
+	auto& target_it = std::find(object_list_.begin(), object_list_.end(), object);
+	object_list_.erase(target_it);
+
+	--instance_count_;
+	if (instance_count_ <= 0)
+	{
+		delete this;	
+	}
 }
 
 void Mesh::Render(ID3D12GraphicsCommandList* command_list)

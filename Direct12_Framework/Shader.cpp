@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Shader.h"
+#include "Mesh.h"
 
 D3D12_RASTERIZER_DESC Shader::CreateRasterizerState()
 {
@@ -106,4 +107,20 @@ void Shader::CreateShader(ID3D12Device* device, ID3D12RootSignature* root_signat
 	if (d3d_pixel_shader_blob) d3d_pixel_shader_blob->Release();
 
 	if (d3d12_pipeline_state_desc.InputLayout.pInputElementDescs) delete[] d3d12_pipeline_state_desc.InputLayout.pInputElementDescs;
+}
+
+void Shader::SetPiplineState(ID3D12GraphicsCommandList* command_list)
+{
+	command_list->SetPipelineState(d3d12_pipeline_state_.Get());
+}
+
+void Shader::AddRenderMesh(Mesh* mesh)
+{
+	render_list_.push_back(mesh);
+}
+
+void Shader::EraseRenderMesh(Mesh* mesh)
+{
+	auto& target_it = std::find(render_list_.begin(), render_list_.end(), mesh);
+	render_list_.erase(target_it);
 }

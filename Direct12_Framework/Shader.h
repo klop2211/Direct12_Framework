@@ -1,5 +1,7 @@
 #pragma once
 
+class Mesh;
+
 // 모든 셰이더의 기초 클래스
 class Shader
 {
@@ -19,9 +21,19 @@ public:
 
 	virtual void CreateShader(ID3D12Device* device, ID3D12RootSignature* root_signature);
 
+	void SetPiplineState(ID3D12GraphicsCommandList* command_list);
+
 	virtual void Render(ID3D12GraphicsCommandList* command_list) = 0;
+
+	void AddRenderMesh(Mesh* mesh);
+	void EraseRenderMesh(Mesh* mesh);
 
 protected:
 	ComPtr<ID3D12PipelineState> d3d12_pipeline_state_ = nullptr;
+	ComPtr<ID3DBlob> d3d_vertex_shader_blob_ = nullptr;
+	ComPtr<ID3DBlob> d3d_pixel_shader_blob_ = nullptr;
+
+	std::list<Mesh*> render_list_;
+
 };
 
