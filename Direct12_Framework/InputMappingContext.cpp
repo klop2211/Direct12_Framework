@@ -4,6 +4,7 @@
 std::array<BYTE, KEY_STATE_COUNT> InputMappingContext::key_state_;
 std::array<bool, KEY_STATE_COUNT> InputMappingContext::togle_trigers_;
 POINT InputMappingContext::old_cursor_position_;
+POINT InputMappingContext::current_cursor_position_;
 
 InputMappingContext::InputMappingContext()
 {

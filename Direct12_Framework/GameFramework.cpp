@@ -30,7 +30,7 @@ void GameFramework::Initialize()
 	CreateDepthStencilView();
 
 	timer_.reset(new Timer);
-	scene_.reset(new DefaultScene);
+	scene_.reset(new DefaultScene(d3d12_device_.Get(), d3d12_command_list_.Get()));
 	input_mapping_context_.reset(new IMCTest());
 }
 

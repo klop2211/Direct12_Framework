@@ -49,6 +49,9 @@
     <Filter Include="Framework\Object">
       <UniqueIdentifier>{4a6d3f63-9176-4a4a-8b38-6da09d72995b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shape">
+      <UniqueIdentifier>{44fd7914-0e72-4a9f-9b3d-988b3e6fa36e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -108,6 +111,15 @@
     <ClInclude Include="Object.h">
       <Filter>Framework\Object</Filter>
     </ClInclude>
+    <ClInclude Include="CubeSubMesh.h">
+      <Filter>Framework\SubMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMesh.h">
+      <Filter>Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMeshObject.h">
+      <Filter>Framework\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct12_Framework.cpp">
@@ -161,6 +173,15 @@
     <ClCompile Include="Object.cpp">
       <Filter>Framework\Object</Filter>
     </ClCompile>
+    <ClCompile Include="CubeSubMesh.cpp">
+      <Filter>Framework\SubMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMesh.cpp">
+      <Filter>Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMeshObject.cpp">
+      <Filter>Framework\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Direct12_Framework.rc">
@@ -177,5 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="StaticMeshShader.hlsl" />
+    <FxCompile Include="GlobalValues.hlsl" />
   </ItemGroup>
 </Project>

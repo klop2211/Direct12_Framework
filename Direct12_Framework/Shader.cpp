@@ -101,12 +101,12 @@ void Shader::CreateShader(ID3D12Device* device, ID3D12RootSignature* root_signat
 	d3d12_pipeline_state_desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	d3d12_pipeline_state_desc.SampleDesc.Count = 1;
 	d3d12_pipeline_state_desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-	HRESULT hResult = device->CreateGraphicsPipelineState(&d3d12_pipeline_state_desc, __uuidof(ID3D12PipelineState), (void**)d3d12_pipeline_state_.GetAddressOf());
+	HRESULT hResult = device->CreateGraphicsPipelineState(&d3d12_pipeline_state_desc, __uuidof(ID3D12PipelineState), (void**)&d3d12_pipeline_state_);
 
 	if (d3d_vertex_shader_blob) d3d_vertex_shader_blob->Release();
 	if (d3d_pixel_shader_blob) d3d_pixel_shader_blob->Release();
 
-	if (d3d12_pipeline_state_desc.InputLayout.pInputElementDescs) delete[] d3d12_pipeline_state_desc.InputLayout.pInputElementDescs;
+	if (d3d12_pipeline_state_desc.InputLayout.pInputElementDescs) delete d3d12_pipeline_state_desc.InputLayout.pInputElementDescs;
 }
 
 void Shader::SetPiplineState(ID3D12GraphicsCommandList* command_list)
@@ -116,7 +116,10 @@ void Shader::SetPiplineState(ID3D12GraphicsCommandList* command_list)
 
 void Shader::AddRenderMesh(Mesh* mesh)
 {
-	render_list_.push_back(mesh);
+	if (std::find(render_list_.begin(), render_list_.end(), mesh) == render_list_.end())
+	{
+		render_list_.push_back(mesh);
+	}
 }
 
 void Shader::EraseRenderMesh(Mesh* mesh)

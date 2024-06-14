@@ -27,11 +27,10 @@ public:
 
 	void AddRenderMesh(Mesh* mesh);
 	void EraseRenderMesh(Mesh* mesh);
+	void ClearRenderList() { render_list_.clear(); }
 
 protected:
-	ComPtr<ID3D12PipelineState> d3d12_pipeline_state_ = nullptr;
-	ComPtr<ID3DBlob> d3d_vertex_shader_blob_ = nullptr;
-	ComPtr<ID3DBlob> d3d_pixel_shader_blob_ = nullptr;
+	ComPtr<ID3D12PipelineState> d3d12_pipeline_state_;
 
 	std::list<Mesh*> render_list_;
 
