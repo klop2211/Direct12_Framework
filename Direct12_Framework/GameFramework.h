@@ -16,6 +16,8 @@ public:
 
 	void ChangeSwapChainState();
 
+	void ChangeInputMappingContext(InputMappingContext* new_imc);
+
 	static GameFramework* Instance() { return game_framework_; }
 
 private:

@@ -123,6 +123,11 @@ void GameFramework::ChangeSwapChainState()
 
 }
 
+void GameFramework::ChangeInputMappingContext(InputMappingContext* new_imc)
+{
+	input_mapping_context_.reset(new_imc);
+}
+
 void GameFramework::WaitForGpuComplete()
 {
 	const UINT64 fence_value = ++fence_values_[swap_chain_buffer_current_index_];

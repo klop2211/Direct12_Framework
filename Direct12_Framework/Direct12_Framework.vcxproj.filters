@@ -52,6 +52,9 @@
     <Filter Include="Shape">
       <UniqueIdentifier>{44fd7914-0e72-4a9f-9b3d-988b3e6fa36e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Camera">
+      <UniqueIdentifier>{f072765f-6971-452b-baa3-34b2a85bccaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -120,6 +123,12 @@
     <ClInclude Include="StaticMeshObject.h">
       <Filter>Framework\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Framework\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="IATest.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct12_Framework.cpp">
@@ -181,6 +190,12 @@
     </ClCompile>
     <ClCompile Include="StaticMeshObject.cpp">
       <Filter>Framework\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Framework\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="IATest.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

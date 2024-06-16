@@ -133,12 +133,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeMesh.h" />
     <ClInclude Include="CubeSubMesh.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="DefaultScene.h" />
     <ClInclude Include="Direct12_Framework.h" />
     <ClInclude Include="GameFramework.h" />
+    <ClInclude Include="IATest.h" />
     <ClInclude Include="IMCTest.h" />
     <ClInclude Include="InputAction.h" />
     <ClInclude Include="InputMappingContext.h" />
@@ -157,12 +159,14 @@
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CubeMesh.cpp" />
     <ClCompile Include="CubeSubMesh.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DefaultScene.cpp" />
     <ClCompile Include="Direct12_Framework.cpp" />
     <ClCompile Include="GameFramework.cpp" />
+    <ClCompile Include="IATest.cpp" />
     <ClCompile Include="IMCTest.cpp" />
     <ClCompile Include="InputAction.cpp" />
     <ClCompile Include="InputMappingContext.cpp" />

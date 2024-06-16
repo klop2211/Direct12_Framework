@@ -17,9 +17,10 @@ void StaticMesh::CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsComma
 void StaticMesh::UpdateShaderVariables(ID3D12GraphicsCommandList* command_list)
 {
 	command_list->SetGraphicsRootShaderResourceView((int)RootSignatureIndex::StaticMesh, d3d12_instaced_object_info_->GetGPUVirtualAddress());
-
-	for (auto& object : object_list_)
+	std::list<Object*>::iterator& it = object_list_.begin();
+	int i = 0;
+	for (; it != object_list_.end();  ++it, ++i)
 	{
-		mapped_instance_info_->world_matrix = object->world_matrix();
+		XMStoreFloat4x4(&mapped_instance_info_[i].world_matrix, XMMatrixTranspose(XMLoadFloat4x4(&(*it)->world_matrix())));
 	}
 }

@@ -4,6 +4,7 @@
 #include "StaticMeshObject.h"
 #include "CubeMesh.h"
 #include "Object.h"
+#include "Camera.h"
 
 DefaultScene::DefaultScene(ID3D12Device* device, ID3D12GraphicsCommandList* command_list)
 {
@@ -24,10 +25,28 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 		shader->CreateShader(device, root_signature_.Get());
 	}
 
+	// 카메라 생성
+	camera_ = new Camera;
+	camera_->CreateViewMatrix(XMFLOAT3(0, 0, 1));
+	camera_->CreateProjectionMatrix(1, 5000, float(float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT)), 40);
+	camera_->CreateShaderVariable(device, command_list);
+	objects_.push_back(camera_);
+
 	// 오브젝트 생성
+	CubeMesh* cube_mesh = new CubeMesh(device, command_list);
 	StaticMeshObject* cube = new StaticMeshObject;
-	cube->set_mesh(new CubeMesh(device, command_list));
+	cube->set_mesh(cube_mesh);
+	cube->set_position_vector(0, 20, 100);
 	objects_.push_back(cube);
+
+	for (int i = 0; i < 10; ++i)
+	{
+		cube = new StaticMeshObject;
+		cube->set_mesh(cube_mesh);
+		cube->set_position_vector(i * 10 - 50, 10, 100);
+		objects_.push_back(cube);
+	}
+
 }
 
 void DefaultScene::CreateRootSignature(ID3D12Device* device)
@@ -67,7 +86,9 @@ void DefaultScene::Render(ID3D12GraphicsCommandList* command_list)
 
 	UpdateShaderRenderList();
 
-	// 카메라 행렬 set
+	// 카메라 info set
+	camera_->SetViewportAndScissorRect(command_list);
+	camera_->UpdateShaderVariable(command_list);
 
 	// light info set
 

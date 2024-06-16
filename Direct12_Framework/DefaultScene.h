@@ -3,6 +3,8 @@
 
 enum class RootSignatureIndex{ Camera = 0, StaticMesh };
 
+class Camera;
+
 // 배치처리 및 인스턴싱을 이용한 렌더 구현
 class DefaultScene :
     public Scene
@@ -20,6 +22,9 @@ public:
 
 protected:
     void UpdateShaderRenderList();
+
+protected:
+    Camera* camera_ = nullptr;
 
 };
 

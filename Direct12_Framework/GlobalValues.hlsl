@@ -5,6 +5,7 @@ cbuffer CameraInfo : register(b0)
 {
     matrix view_matrix : packoffset(c0);
     matrix projection_matrix : packoffset(c4);
+    float3 camera_position : packoffset(c8);
 };
 
 // 오브젝트 info
