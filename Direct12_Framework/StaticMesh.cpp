@@ -10,7 +10,7 @@ void StaticMesh::CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsComma
 		instance_info_count_ = instance_count_;
 	}
 	UINT element_byte = (((sizeof(StaticMeshInstanceInfo) * instance_info_count_) + 255) & ~255); //256ÀÇ ¹è¼ö
-	d3d12_instaced_object_info_ = CreateBufferResource(device, command_list, nullptr, element_byte);
+	d3d12_instaced_object_info_.Attach(CreateBufferResource(device, command_list, nullptr, element_byte));
 	d3d12_instaced_object_info_->Map(0, nullptr, (void**)&mapped_instance_info_);
 }
 

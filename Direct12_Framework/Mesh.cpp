@@ -9,6 +9,8 @@ Mesh::~Mesh()
 	{
 		delete sub_mesh;
 	}
+
+	d3d12_instaced_object_info_->Unmap(0, nullptr);
 }
 
 void Mesh::AddRef(Object* object)

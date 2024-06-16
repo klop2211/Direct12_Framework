@@ -63,13 +63,18 @@ void DefaultScene::CreateRootSignature(ID3D12Device* device)
 
 void DefaultScene::Render(ID3D12GraphicsCommandList* command_list)
 {
+	command_list->SetGraphicsRootSignature(root_signature_.Get());
+
 	UpdateShaderRenderList();
 
 	// 카메라 행렬 set
 
 	// light info set
 
-	// renderer->render()
+	for (auto& shader : shaders_)
+	{
+		shader->Render(command_list);
+	}
 }
 
 void DefaultScene::UpdateShaderRenderList()

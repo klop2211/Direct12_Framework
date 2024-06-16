@@ -116,6 +116,8 @@ void Shader::SetPiplineState(ID3D12GraphicsCommandList* command_list)
 
 void Shader::AddRenderMesh(Mesh* mesh)
 {
+	if (!mesh) return;
+
 	if (std::find(render_list_.begin(), render_list_.end(), mesh) == render_list_.end())
 	{
 		render_list_.push_back(mesh);
@@ -124,6 +126,8 @@ void Shader::AddRenderMesh(Mesh* mesh)
 
 void Shader::EraseRenderMesh(Mesh* mesh)
 {
+	if (!mesh) return;
+
 	auto& target_it = std::find(render_list_.begin(), render_list_.end(), mesh);
 	render_list_.erase(target_it);
 }

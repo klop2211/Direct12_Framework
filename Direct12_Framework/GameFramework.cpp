@@ -29,9 +29,18 @@ void GameFramework::Initialize()
 	CreateRenderTargetViews();
 	CreateDepthStencilView();
 
+	d3d12_command_list_->Reset(d3d12_command_allocator_.Get(), nullptr);
+
 	timer_.reset(new Timer);
 	scene_.reset(new DefaultScene(d3d12_device_.Get(), d3d12_command_list_.Get()));
 	input_mapping_context_.reset(new IMCTest());
+
+	d3d12_command_list_->Close();
+	ID3D12CommandList* d3d12_command_lists[] = { d3d12_command_list_.Get() };
+	d3d12_command_queue_->ExecuteCommandLists(1, d3d12_command_lists);
+
+	WaitForGpuComplete();
+
 }
 
 void GameFramework::FrameAdvance()
@@ -80,8 +89,8 @@ void GameFramework::FrameAdvance()
 
 	hresult = d3d12_command_list_->Close();
 
-	ID3D12CommandList* ppd3dCommandLists[] = { d3d12_command_list_.Get()};
-	d3d12_command_queue_->ExecuteCommandLists(1, ppd3dCommandLists);
+	ID3D12CommandList* d3d12_command_lists[] = { d3d12_command_list_.Get()};
+	d3d12_command_queue_->ExecuteCommandLists(1, d3d12_command_lists);
 
 	WaitForGpuComplete();
 
@@ -162,8 +171,8 @@ void GameFramework::ResizeBackBuffer()
 
 	d3d12_command_list_->Close();
 
-	ID3D12CommandList* ppd3dCommandLists[] = { d3d12_command_list_.Get() };
-	d3d12_command_queue_->ExecuteCommandLists(1, ppd3dCommandLists);
+	ID3D12CommandList* d3d12_command_lists[] = { d3d12_command_list_.Get() };
+	d3d12_command_queue_->ExecuteCommandLists(1, d3d12_command_lists);
 
 	WaitForGpuComplete();
 

@@ -7,7 +7,7 @@ class Object
 {
 public:
 	Object() {}
-	~Object() {}
+	virtual ~Object() {}
 
 	//getter
 	bool is_live() const { return is_live_; }

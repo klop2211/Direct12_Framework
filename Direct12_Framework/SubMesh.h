@@ -13,6 +13,9 @@ struct IndexBufferInfo
 class SubMesh
 {
 public:
+	SubMesh() {}
+	virtual ~SubMesh() {}
+
 	void CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* command_list);
 
 	void Render(ID3D12GraphicsCommandList* command_list, unsigned int instance_count);
