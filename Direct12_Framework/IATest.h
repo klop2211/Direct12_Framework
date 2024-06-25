@@ -5,8 +5,7 @@ class IATest :
     public InputAction
 {
 public:
-
-    //IATest* Instance() const;
+    static IATest* Instance();
 
 };
 

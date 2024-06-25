@@ -8,6 +8,8 @@ public:
 
 	XMFLOAT3 action_value() const { return action_value_; }
 
+	void AddActionValue(float x, float y = 0, float z = 0) { action_value_ += XMFLOAT3(x, y, z); }
+
 private:
 	XMFLOAT3 action_value_{ 0,0,0 };
 

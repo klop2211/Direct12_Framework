@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-enum class RootSignatureIndex{ Camera = 0, StaticMesh };
+enum class RootSignatureIndex{ Camera = 0, StaticMesh, Light, Material };
 
 class Camera;
 
@@ -16,7 +16,7 @@ public:
 
     virtual void CreateRootSignature(ID3D12Device* device);
 
-    virtual void Update(float elapsed_time) {}
+    virtual void Update(float elapsed_time);
     virtual void Render(ID3D12GraphicsCommandList* command_list);
 
 

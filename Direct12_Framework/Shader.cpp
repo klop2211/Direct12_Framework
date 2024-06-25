@@ -118,6 +118,7 @@ void Shader::AddRenderMesh(Mesh* mesh)
 {
 	if (!mesh) return;
 
+	//중복 검사
 	if (std::find(render_list_.begin(), render_list_.end(), mesh) == render_list_.end())
 	{
 		render_list_.push_back(mesh);

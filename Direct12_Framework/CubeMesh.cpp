@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CubeMesh.h"
 #include "CubeSubMesh.h"
+#include "StaticMeshShader.h"
 
 CubeMesh::CubeMesh(ID3D12Device* device, ID3D12GraphicsCommandList* command_list)
 {
@@ -9,4 +10,6 @@ CubeMesh::CubeMesh(ID3D12Device* device, ID3D12GraphicsCommandList* command_list
 	AddSubMesh(sub_mesh);
 
 	CreateShaderVariables(device, command_list);
+
+	shader_ = StaticMeshShader::Instance();
 }

@@ -83,6 +83,8 @@ CubeSubMesh::CubeSubMesh(ID3D12Device* device, ID3D12GraphicsCommandList* comman
 	index_buffer.emplace_back(2);
 	index_buffer.emplace_back(3);
 
+	CalculateVertexNormal();
+
 	CreateShaderVariables(device, command_list);
 
 }

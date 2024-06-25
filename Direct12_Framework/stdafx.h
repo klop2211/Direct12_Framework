@@ -328,10 +328,21 @@ namespace Plane
 		XMStoreFloat4(&xmf4Result, XMPlaneNormalize(XMLoadFloat4(&xmf4Plane)));
 		return(xmf4Result);
 	}
+	inline XMFLOAT3 PlaneNormal(const XMFLOAT3& v0, const XMFLOAT3& v1, const XMFLOAT3& v2)
+	{
+		XMVECTOR edge1 = XMLoadFloat3(&v1) - XMLoadFloat3(&v0);
+		XMVECTOR edge2 = XMLoadFloat3(&v2) - XMLoadFloat3(&v0);
+		XMVECTOR normal = XMVector3Cross(edge1, edge2);
+		XMFLOAT3 r_value;
+		XMStoreFloat3(&r_value, normal);
+		return r_value;
+	}
+
 }
 
 // xmf 관련 연산자 오버로딩
 inline XMFLOAT3 operator+(const XMFLOAT3& lhs, const XMFLOAT3& rhs) { return Vector3::Add(lhs, rhs); }
+inline void operator+=(XMFLOAT3& lhs, const XMFLOAT3& rhs) { lhs = Vector3::Add(lhs, rhs); }
 inline XMFLOAT3 operator-(const XMFLOAT3& lhs, const XMFLOAT3& rhs) { return Vector3::Add(lhs, rhs, -1); }
 inline XMFLOAT3 operator*(const XMFLOAT3& lhs, const float& rhs) { return Vector3::ScalarProduct(lhs, rhs, false); }
 inline XMFLOAT4X4 operator*(const XMFLOAT4X4& lhs, const XMFLOAT4X4& rhs) { return Matrix4x4::Multiply(lhs, rhs); }

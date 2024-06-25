@@ -20,6 +20,9 @@ public:
 
 	void Render(ID3D12GraphicsCommandList* command_list, unsigned int instance_count);
 
+	// 정점과 인덱스버퍼를 사용하여 normal버퍼를 생성
+	void CalculateVertexNormal();
+
 protected:
 	D3D12_PRIMITIVE_TOPOLOGY d3d12_primitive_topology_ = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -34,6 +37,12 @@ protected:
 	D3D12_VERTEX_BUFFER_VIEW d3d12_color_buffer_view_;
 
 	std::vector<XMFLOAT4> color_buffer_;
+
+	ComPtr<ID3D12Resource> d3d12_normal_buffer_ = nullptr;
+	ComPtr<ID3D12Resource> d3d12_normal_upload_buffer_ = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW d3d12_normal_buffer_view_;
+
+	std::vector<XMFLOAT3> normal_buffer_;
 
 	//대부분의 메쉬는 1개의 인덱스 버퍼를 사용하지만 일부 메쉬의 경우 정점을 공유한채로 인덱스 버퍼가 여러개인 경우가 있음
 	std::vector<ComPtr<ID3D12Resource>> d3d12_subset_index_buffers_;

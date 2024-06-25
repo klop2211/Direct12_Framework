@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include "SubMesh.h"
 #include "Object.h"
+#include "Shader.h"
 
 Mesh::~Mesh()
 {
@@ -44,4 +45,9 @@ void Mesh::Render(ID3D12GraphicsCommandList* command_list)
 void Mesh::AddSubMesh(SubMesh* sub_mesh)
 {
 	sub_meshes_.push_back(sub_mesh);
+}
+
+void Mesh::SetMeshAtShader()
+{
+	shader_->AddRenderMesh(this);
 }

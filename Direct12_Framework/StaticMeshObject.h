@@ -8,18 +8,9 @@ class StaticMeshObject :
 {
 public:
     StaticMeshObject() {}
-    StaticMeshObject(StaticMesh* mesh) : mesh_(mesh) {}
-    ~StaticMeshObject();
-
-    //getter
-    virtual Mesh* mesh() const { return (Mesh*)mesh_; }
-
-    //setter
-    void set_mesh(StaticMesh* value);
+    StaticMeshObject(StaticMesh* mesh); 
 
     void Update(float elapsed_time);
 
-private:
-    StaticMesh* mesh_ = nullptr;
 };
 

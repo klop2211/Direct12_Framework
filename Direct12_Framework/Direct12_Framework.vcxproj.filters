@@ -127,7 +127,7 @@
       <Filter>Framework\Camera</Filter>
     </ClInclude>
     <ClInclude Include="IATest.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>TestClass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -195,7 +195,7 @@
       <Filter>Framework\Camera</Filter>
     </ClCompile>
     <ClCompile Include="IATest.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>TestClass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,5 +214,6 @@
   <ItemGroup>
     <FxCompile Include="StaticMeshShader.hlsl" />
     <FxCompile Include="GlobalValues.hlsl" />
+    <FxCompile Include="LightFunc.hlsl" />
   </ItemGroup>
 </Project>

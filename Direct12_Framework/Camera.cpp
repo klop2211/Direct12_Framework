@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "DefaultScene.h"
+#include "IATest.h"
 
 Camera::Camera() : Object()
 {
@@ -56,6 +57,11 @@ void Camera::SetViewportAndScissorRect(ID3D12GraphicsCommandList* command_list)
 
 void Camera::Update(float elapsed_time)
 {
+	//TODO: 임시 카메라 조작을 추후 카메라를 상속받는 클래스로 구현
+	XMFLOAT3 temp = IATest::Instance()->action_value();
+	AddRotate(-temp.y, temp.x, 0);
+	IATest::Instance()->set_action_value(0, 0, 0);
+
 	UpdateViewMatrix();
 }
 

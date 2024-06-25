@@ -34,15 +34,13 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 
 	// 오브젝트 생성
 	CubeMesh* cube_mesh = new CubeMesh(device, command_list);
-	StaticMeshObject* cube = new StaticMeshObject;
-	cube->set_mesh(cube_mesh);
+	StaticMeshObject* cube = new StaticMeshObject(cube_mesh);
 	cube->set_position_vector(0, 20, 100);
 	objects_.push_back(cube);
 
 	for (int i = 0; i < 10; ++i)
 	{
-		cube = new StaticMeshObject;
-		cube->set_mesh(cube_mesh);
+		cube = new StaticMeshObject(cube_mesh);
 		cube->set_position_vector(i * 10 - 50, 10, 100);
 		objects_.push_back(cube);
 	}
@@ -51,7 +49,7 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 
 void DefaultScene::CreateRootSignature(ID3D12Device* device)
 {
-	D3D12_ROOT_PARAMETER d3d12_root_parameter[2];
+	D3D12_ROOT_PARAMETER d3d12_root_parameter[4];
 	d3d12_root_parameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	d3d12_root_parameter[0].Descriptor.ShaderRegister = 0; //Camera
 	d3d12_root_parameter[0].Descriptor.RegisterSpace = 0; // b0
@@ -61,6 +59,16 @@ void DefaultScene::CreateRootSignature(ID3D12Device* device)
 	d3d12_root_parameter[1].Descriptor.ShaderRegister = 0; // StaticMeshObjectInfos
 	d3d12_root_parameter[1].Descriptor.RegisterSpace = 0; // t0
 	d3d12_root_parameter[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	d3d12_root_parameter[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	d3d12_root_parameter[2].Descriptor.ShaderRegister = 0; //Lights
+	d3d12_root_parameter[2].Descriptor.RegisterSpace = 1; // b1
+	d3d12_root_parameter[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	d3d12_root_parameter[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	d3d12_root_parameter[3].Descriptor.ShaderRegister = 0; //Material
+	d3d12_root_parameter[3].Descriptor.RegisterSpace = 2; // b2
+	d3d12_root_parameter[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 
 	D3D12_ROOT_SIGNATURE_FLAGS d3d12_root_signature_flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
@@ -80,6 +88,14 @@ void DefaultScene::CreateRootSignature(ID3D12Device* device)
 	if (d3d_error_blob) d3d_error_blob->Release();
 }
 
+void DefaultScene::Update(float elapsed_time)
+{
+	for (auto& object : objects_)
+	{
+		object->Update(elapsed_time);
+	}
+}
+
 void DefaultScene::Render(ID3D12GraphicsCommandList* command_list)
 {
 	command_list->SetGraphicsRootSignature(root_signature_.Get());
@@ -90,7 +106,13 @@ void DefaultScene::Render(ID3D12GraphicsCommandList* command_list)
 	camera_->SetViewportAndScissorRect(command_list);
 	camera_->UpdateShaderVariable(command_list);
 
+	//TODO: 현재 카메라 위치와 방향을 기준으로 유효한 조명들에 대해서 연산하도록 조명을 업데이트 해야한다.
+	// 점 조명: 조명이 감쇄되어 닿지 않을 거리라면 계산할 필요가 없다.
+	// 방향 조명: 실내에 경우 외부 방향조명은 필요없다.
+	// 스팟 조명: 조명 방향과 위치가 카메라에 반대라면 영향을 주지 않는다.
+	// 구현 방법: 카메라 절두체 컬링을 변형하여 활용하는 것을 생각해볼 수 있다. 
 	// light info set
+
 
 	for (auto& shader : shaders_)
 	{
@@ -103,9 +125,10 @@ void DefaultScene::UpdateShaderRenderList()
 	for (auto& shader : shaders_)
 	{
 		shader->ClearRenderList();
-		for (auto& object : objects_)
-		{
-			shader->AddRenderMesh(object->mesh());
-		}
 	}
+	for (auto& object : objects_)
+	{
+		object->SetMeshAtShader();
+	}
+
 }

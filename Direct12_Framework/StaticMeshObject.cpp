@@ -2,19 +2,13 @@
 #include "StaticMeshObject.h"
 #include "StaticMesh.h"
 #include "Mesh.h"
+#include "IATest.h"
 
-StaticMeshObject::~StaticMeshObject()
+StaticMeshObject::StaticMeshObject(StaticMesh* mesh)
 {
-	mesh_->Release(this);
-}
-
-void StaticMeshObject::set_mesh(StaticMesh* value)
-{
-	value->AddRef(this);
-	mesh_ = value;
+	set_mesh(mesh);
 }
 
 void StaticMeshObject::Update(float elapsed_time)
 {
-
 }

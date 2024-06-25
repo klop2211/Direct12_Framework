@@ -2,6 +2,8 @@
 #include "StaticMesh.h"
 #include "Object.h"
 #include "DefaultScene.h"
+#include "StaticMeshShader.h"
+
 
 void StaticMesh::CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* command_list)
 {

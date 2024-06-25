@@ -33,6 +33,21 @@ void SubMesh::CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandL
 
 		vertex_buffer_views_.emplace_back(d3d12_color_buffer_view_);
 	}
+	if (normal_buffer_.size())
+	{
+		d3d12_normal_buffer_.Attach(CreateBufferResource(device, command_list,
+			normal_buffer_.data(), sizeof(XMFLOAT3) * normal_buffer_.size(),
+			D3D12_HEAP_TYPE_DEFAULT,
+			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+			&d3d12_normal_upload_buffer_));
+
+		d3d12_normal_buffer_view_.BufferLocation = d3d12_normal_buffer_->GetGPUVirtualAddress();
+		d3d12_normal_buffer_view_.StrideInBytes = sizeof(XMFLOAT3);
+		d3d12_normal_buffer_view_.SizeInBytes = sizeof(XMFLOAT3) * normal_buffer_.size();
+
+		vertex_buffer_views_.emplace_back(d3d12_normal_buffer_view_);
+
+	}
 
 	for (auto& index_buffer : subset_index_buffers_)
 	{
@@ -74,4 +89,41 @@ void SubMesh::Render(ID3D12GraphicsCommandList* command_list, unsigned int insta
 		command_list->DrawInstanced(position_buffer_.size(), instance_count, 0, 0);
 	}
 
+}
+
+void SubMesh::CalculateVertexNormal()
+{
+	if (d3d12_primitive_topology_ == D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+	{
+		normal_buffer_.resize(position_buffer_.size());
+		if (subset_index_buffers_.size())
+		{
+			for (auto& index_buffer : subset_index_buffers_)
+			{
+				for (int i = 0; i < index_buffer.size() - 2; i += 3)
+				{
+					XMFLOAT3 normal;
+					normal = Plane::PlaneNormal(position_buffer_[index_buffer[i]], position_buffer_[index_buffer[i + 1]], position_buffer_[index_buffer[i + 2]]);
+					normal_buffer_[index_buffer[i]] += normal;
+					normal_buffer_[index_buffer[i + 1]] += normal;
+					normal_buffer_[index_buffer[i + 2]] += normal;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < position_buffer_.size() - 2; i += 3)
+			{
+				XMFLOAT3 normal;
+				normal = Plane::PlaneNormal(position_buffer_[i], position_buffer_[i + 1], position_buffer_[i + 2]);
+				normal_buffer_[i] = normal_buffer_[i + 1] = normal_buffer_[i + 2] = normal;
+			}
+		}
+
+		for (XMFLOAT3& normal : normal_buffer_)
+		{
+			Vector3::Normalize(normal);
+		}
+
+	}
 }
