@@ -44,12 +44,12 @@ CubeSubMesh::CubeSubMesh(ID3D12Device* device, ID3D12GraphicsCommandList* comman
 	index_buffer.emplace_back(2);
 
 	//back
-	index_buffer.emplace_back(4);
+	index_buffer.emplace_back(5);
+	index_buffer.emplace_back(6);
 	index_buffer.emplace_back(7);
 	index_buffer.emplace_back(5);
 	index_buffer.emplace_back(4);
 	index_buffer.emplace_back(6);
-	index_buffer.emplace_back(7);
 
 	//left
 	index_buffer.emplace_back(4);
@@ -62,18 +62,18 @@ CubeSubMesh::CubeSubMesh(ID3D12Device* device, ID3D12GraphicsCommandList* comman
 	//right
 	index_buffer.emplace_back(1);
 	index_buffer.emplace_back(5);
-	index_buffer.emplace_back(7);
-	index_buffer.emplace_back(1);
+	index_buffer.emplace_back(3);
+	index_buffer.emplace_back(5);
 	index_buffer.emplace_back(7);
 	index_buffer.emplace_back(3);
 
 	//top
-	index_buffer.emplace_back(4);
+	index_buffer.emplace_back(0);
 	index_buffer.emplace_back(5);
 	index_buffer.emplace_back(1);
-	index_buffer.emplace_back(4);
-	index_buffer.emplace_back(1);
 	index_buffer.emplace_back(0);
+	index_buffer.emplace_back(4);
+	index_buffer.emplace_back(5);
 
 	//bottom
 	index_buffer.emplace_back(6);

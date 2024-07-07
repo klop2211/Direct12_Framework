@@ -8,13 +8,18 @@ struct IndexBufferInfo
 	IndexBufferInfo(const D3D12_INDEX_BUFFER_VIEW& view, int count) : d3d12_index_buffer_view(view), index_count(count) {}
 };
 
+class Material;
+
 // 메쉬의 가장 작은 단위(단 1개의 메쉬를 저장하는 클래스)
 // 간단한 Shape 메쉬를 만들 생각이면 이 메쉬를 상속 받으면 된다.
 class SubMesh
 {
 public:
 	SubMesh() {}
-	virtual ~SubMesh() {}
+	virtual ~SubMesh();
+
+	//setter
+	void set_material(Material* value) { material_ = value; }
 
 	void CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* command_list);
 
@@ -52,5 +57,8 @@ protected:
 	std::vector<std::vector<UINT>> subset_index_buffers_;
 
 	std::vector<D3D12_VERTEX_BUFFER_VIEW> vertex_buffer_views_;
+
+	//이 메쉬가 가지는 재질
+	Material* material_;
 };
 

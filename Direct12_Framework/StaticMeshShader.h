@@ -17,6 +17,6 @@ public:
     virtual void Render(ID3D12GraphicsCommandList* command_list);
     
 private:
-    static std::unique_ptr<StaticMeshShader> instance_;
+    static StaticMeshShader* instance_;
 };
 

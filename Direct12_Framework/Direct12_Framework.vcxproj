@@ -144,6 +144,8 @@
     <ClInclude Include="IMCTest.h" />
     <ClInclude Include="InputAction.h" />
     <ClInclude Include="InputMappingContext.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Scene.h" />
@@ -170,6 +172,8 @@
     <ClCompile Include="IMCTest.cpp" />
     <ClCompile Include="InputAction.cpp" />
     <ClCompile Include="InputMappingContext.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Scene.cpp" />

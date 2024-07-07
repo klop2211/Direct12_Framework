@@ -55,6 +55,9 @@
     <Filter Include="Framework\Camera">
       <UniqueIdentifier>{f072765f-6971-452b-baa3-34b2a85bccaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Light">
+      <UniqueIdentifier>{2e741b57-295a-40f2-bbcd-fbff3b527c54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -129,6 +132,12 @@
     <ClInclude Include="IATest.h">
       <Filter>TestClass</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Framework\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct12_Framework.cpp">
@@ -196,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="IATest.cpp">
       <Filter>TestClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Framework\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

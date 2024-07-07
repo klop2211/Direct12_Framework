@@ -59,12 +59,8 @@ using Microsoft::WRL::ComPtr;
 
 #define TEXTURES				6
 
-#define MAX_LIGHTS				8 
+#define MAX_LIGHT				16
 #define MAX_MATERIALS			8 
-
-#define POINT_LIGHT				1
-#define SPOT_LIGHT				2
-#define DIRECTIONAL_LIGHT		3
 
 //#define _WITH_CB_GAMEOBJECT_32BIT_CONSTANTS
 //#define _WITH_CB_GAMEOBJECT_ROOT_DESCRIPTOR

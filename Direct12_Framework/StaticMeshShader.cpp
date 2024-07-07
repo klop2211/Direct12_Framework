@@ -2,17 +2,17 @@
 #include "StaticMeshShader.h"
 #include "Mesh.h"
 
-std::unique_ptr<StaticMeshShader> StaticMeshShader::instance_ = nullptr;
+StaticMeshShader* StaticMeshShader::instance_ = nullptr;
 
 StaticMeshShader::StaticMeshShader()
 {
 	assert(instance_ == nullptr);
-	instance_.reset(this);
+	instance_ = this;
 }
 
 StaticMeshShader* StaticMeshShader::Instance()
 {
-	return instance_.get();
+	return instance_;
 }
 
 D3D12_INPUT_LAYOUT_DESC StaticMeshShader::CreateInputLayout()

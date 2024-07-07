@@ -6,6 +6,9 @@ class Mesh;
 class Shader
 {
 public:
+	Shader() {}
+	~Shader();
+
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout() = 0;
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual D3D12_BLEND_DESC CreateBlendState();

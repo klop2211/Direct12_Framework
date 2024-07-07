@@ -2,6 +2,11 @@
 #include "Shader.h"
 #include "Mesh.h"
 
+Shader::~Shader()
+{
+	render_list_.clear();
+}
+
 D3D12_RASTERIZER_DESC Shader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3d12_rasterizer_desc;

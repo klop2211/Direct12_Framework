@@ -3,6 +3,7 @@
 class SubMesh;
 class Object;
 class Shader;
+class Material;
 
 // 실제 렌더러에서 그릴 메쉬의 기초 클래스 
 // 인스턴싱을 사용하여 렌더한다.
@@ -28,10 +29,12 @@ public:
 	// 이 메쉬가 사용할 셰이더의 렌더리스트에 이 메쉬를 set
 	void SetMeshAtShader();
 
+	void SetMaterialAtSubMesh(int sub_mesh_index, Material* material);
+
 protected:
 	//TODO: 적절한 개수가 몇일 지 생각하기
 	// Create 되는 instance info의 개수, 이 수를 count가 넘으면 쉐이더 value를 다시 생성해야한다.
-	unsigned int instance_info_count_ = 100;
+	unsigned int instance_info_count_ = 10000;
 
 	// 이 메쉬가 그려져야 하는 갯수
 	unsigned int instance_count_ = 0;
@@ -40,7 +43,7 @@ protected:
 	ComPtr<ID3D12Resource> d3d12_instaced_object_info_ = nullptr;
 
 	// 이 메쉬의 서브메쉬 (메쉬는 단일 메쉬가 아닐수 있음)
-	std::list<SubMesh*> sub_meshes_;
+	std::vector<SubMesh*> sub_meshes_;
 
 	// 이 메쉬를 참조하고 있는 object 리스트. 렌더 시 이 오브젝트들의 info를 얻어와서 인스턴싱 정보를 채운다
 	std::list<Object*> object_list_;

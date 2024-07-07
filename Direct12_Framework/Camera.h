@@ -12,7 +12,7 @@ class Camera : public Object
 {
 public:
 	Camera();
-	~Camera() {}
+	~Camera() { d3d12_camera_info_buffer_->Unmap(0, nullptr); }
 
 
 	//setter

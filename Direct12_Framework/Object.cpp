@@ -47,9 +47,9 @@ void Object::SetMeshAtShader()
 void Object::Rotate(float pitch, float yaw, float roll)
 {
     XMFLOAT3 x_axis{1,0,0}, y_axis{0,1,0}, z_axis{0,0,1};
-    XMMATRIX pitch_rotate = XMMatrixRotationAxis(XMLoadFloat3(&x_axis), XMConvertToRadians(pitch));
+    XMMATRIX pitch_rotate = XMMatrixRotationAxis(XMLoadFloat3(&right_vector()), XMConvertToRadians(pitch));
     XMMATRIX yaw_rotate = XMMatrixRotationAxis(XMLoadFloat3(&y_axis), XMConvertToRadians(yaw));
-    XMMATRIX roll_rotate = XMMatrixRotationAxis(XMLoadFloat3(&z_axis), XMConvertToRadians(roll));
+    XMMATRIX roll_rotate = XMMatrixRotationAxis(XMLoadFloat3(&look_vector()), XMConvertToRadians(roll));
 
     XMMATRIX rotate_matrix = XMMatrixMultiply(XMMatrixMultiply(pitch_rotate, yaw_rotate), roll_rotate);
 

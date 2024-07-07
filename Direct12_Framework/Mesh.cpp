@@ -3,6 +3,7 @@
 #include "SubMesh.h"
 #include "Object.h"
 #include "Shader.h"
+#include "Material.h"
 
 Mesh::~Mesh()
 {
@@ -49,5 +50,13 @@ void Mesh::AddSubMesh(SubMesh* sub_mesh)
 
 void Mesh::SetMeshAtShader()
 {
-	shader_->AddRenderMesh(this);
+	if (shader_)
+	{
+		shader_->AddRenderMesh(this);
+	}
+}
+
+void Mesh::SetMaterialAtSubMesh(int sub_mesh_index, Material* material)
+{
+	sub_meshes_[sub_mesh_index]->set_material(material);
 }

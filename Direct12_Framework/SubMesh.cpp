@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "SubMesh.h"
+#include "Material.h"
 
+SubMesh::~SubMesh()
+{
+
+}
 
 void SubMesh::CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* command_list)
 {
@@ -76,6 +81,11 @@ void SubMesh::Render(ID3D12GraphicsCommandList* command_list, unsigned int insta
 
 	command_list->IASetVertexBuffers(0, vertex_buffer_views_.size(), vertex_buffer_views_.data());
 
+	if (material_)
+	{
+		material_->UpdateShaderVariable(command_list);
+	}
+
 	if (d3d12_subset_index_buffers_.size())
 	{
 		for (auto& index_buffer_info : subset_index_buffer_infos)
@@ -100,13 +110,39 @@ void SubMesh::CalculateVertexNormal()
 		{
 			for (auto& index_buffer : subset_index_buffers_)
 			{
-				for (int i = 0; i < index_buffer.size() - 2; i += 3)
+				for (int i = 0; i < position_buffer_.size(); ++i)
 				{
-					XMFLOAT3 normal;
-					normal = Plane::PlaneNormal(position_buffer_[index_buffer[i]], position_buffer_[index_buffer[i + 1]], position_buffer_[index_buffer[i + 2]]);
-					normal_buffer_[index_buffer[i]] += normal;
-					normal_buffer_[index_buffer[i + 1]] += normal;
-					normal_buffer_[index_buffer[i + 2]] += normal;
+					XMFLOAT3 normal{ 0,0,0 };
+					int count = 0;
+					for (int j = 0; j < index_buffer.size(); j += 3)
+					{
+						// 이 정점을 포함하는 폴리곤을 찾으면 그 평면의 노말을 계산하여 더한다.
+						if (index_buffer[j] == i)
+						{
+							normal += Plane::PlaneNormal(
+								position_buffer_[index_buffer[j]], 
+								position_buffer_[index_buffer[j + 1]], 
+								position_buffer_[index_buffer[j + 2]]);
+							++count;
+						}
+						if (index_buffer[j + 1] == i)
+						{
+							normal += Plane::PlaneNormal(
+								position_buffer_[index_buffer[j]],
+								position_buffer_[index_buffer[j + 1]],
+								position_buffer_[index_buffer[j + 2]]);
+							++count;
+						}
+						if (index_buffer[j + 2] == i)
+						{
+							normal += Plane::PlaneNormal(
+								position_buffer_[index_buffer[j]],
+								position_buffer_[index_buffer[j + 1]],
+								position_buffer_[index_buffer[j + 2]]);
+							++count;
+						}
+					}
+					normal_buffer_[i] = normal;
 				}
 			}
 		}
@@ -122,7 +158,7 @@ void SubMesh::CalculateVertexNormal()
 
 		for (XMFLOAT3& normal : normal_buffer_)
 		{
-			Vector3::Normalize(normal);
+			normal = Vector3::Normalize(normal);
 		}
 
 	}

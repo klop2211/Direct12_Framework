@@ -9,37 +9,20 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	D3D12_RESOURCE_STATES d3dResourceStates, ID3D12Resource** ppd3dUploadBuffer)
 {
 	ID3D12Resource* pd3dBuffer = NULL;
-	D3D12_HEAP_PROPERTIES d3dHeapPropertiesDesc;
-	::ZeroMemory(&d3dHeapPropertiesDesc, sizeof(D3D12_HEAP_PROPERTIES));
-	d3dHeapPropertiesDesc.Type = d3dHeapType;
-	d3dHeapPropertiesDesc.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-	d3dHeapPropertiesDesc.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-	d3dHeapPropertiesDesc.CreationNodeMask = 1;
-	d3dHeapPropertiesDesc.VisibleNodeMask = 1;
-
-	D3D12_RESOURCE_DESC d3dResourceDesc;
-	::ZeroMemory(&d3dResourceDesc, sizeof(D3D12_RESOURCE_DESC));
-	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	d3dResourceDesc.Alignment = 0;
-	d3dResourceDesc.Width = nBytes;
-	d3dResourceDesc.Height = 1;
-	d3dResourceDesc.DepthOrArraySize = 1;
-	d3dResourceDesc.MipLevels = 1;
-	d3dResourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-	d3dResourceDesc.SampleDesc.Count = 1;
-	d3dResourceDesc.SampleDesc.Quality = 0;
-	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATE_COMMON;
 	if (d3dHeapType == D3D12_HEAP_TYPE_UPLOAD) d3dResourceInitialStates =
 		D3D12_RESOURCE_STATE_GENERIC_READ;
-	else if (d3dHeapType == D3D12_HEAP_TYPE_READBACK) d3dResourceInitialStates =
+	else if (d3dHeapType == D3D12_HEAP_TYPE_DEFAULT) d3dResourceInitialStates =
 		D3D12_RESOURCE_STATE_COPY_DEST;
 
-	HRESULT hResult = pd3dDevice->CreateCommittedResource(&d3dHeapPropertiesDesc,
-		D3D12_HEAP_FLAG_NONE, &d3dResourceDesc, d3dResourceInitialStates, NULL,
-		__uuidof(ID3D12Resource), (void**)&pd3dBuffer);
+	HRESULT hResult = pd3dDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(d3dHeapType),
+		D3D12_HEAP_FLAG_NONE, 
+		&CD3DX12_RESOURCE_DESC::Buffer(nBytes), 
+		d3dResourceInitialStates, 
+		nullptr,
+		IID_PPV_ARGS(&pd3dBuffer));
 
 	if (pData)
 	{
@@ -50,15 +33,13 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 			if (ppd3dUploadBuffer)
 			{
 				//업로드 버퍼를 생성한다. 
-				d3dHeapPropertiesDesc.Type = D3D12_HEAP_TYPE_UPLOAD;
 				pd3dDevice->CreateCommittedResource(
-					&d3dHeapPropertiesDesc,
+					&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 					D3D12_HEAP_FLAG_NONE,
-					&d3dResourceDesc,
+					&CD3DX12_RESOURCE_DESC::Buffer(nBytes),
 					D3D12_RESOURCE_STATE_GENERIC_READ,
-					NULL,
-					__uuidof(ID3D12Resource),
-					(void**)ppd3dUploadBuffer);
+					nullptr,
+					IID_PPV_ARGS(ppd3dUploadBuffer));
 
 				//업로드 버퍼를 매핑하여 초기화 데이터를 업로드 버퍼에 복사한다. 
 				D3D12_RANGE d3dReadRange = { 0, 0 };

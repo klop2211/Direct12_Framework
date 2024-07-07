@@ -5,6 +5,8 @@
 #include "CubeMesh.h"
 #include "Object.h"
 #include "Camera.h"
+#include "Light.h"
+#include "Material.h"
 
 DefaultScene::DefaultScene(ID3D12Device* device, ID3D12GraphicsCommandList* command_list)
 {
@@ -18,7 +20,8 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	// 쉐이더 생성
 	int shader_count = 1;
 	shaders_.reserve(shader_count);
-	shaders_.emplace_back(new StaticMeshShader);
+	Shader* temp = new StaticMeshShader;
+	shaders_.push_back(temp);
 
 	for (auto& shader : shaders_)
 	{
@@ -32,17 +35,59 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	camera_->CreateShaderVariable(device, command_list);
 	objects_.push_back(camera_);
 
+	// 조명 생성
+	global_ambient_ = XMFLOAT4(0.1, 0.1, 0.1, 1);
+	lights_.reserve(kMaxLight);
+	LightInfo test_light{
+		{1,1,1,1},
+		{1,1,1,1},
+		{1,1,1,1},
+		{0, 0, 0},
+		(int)LightType::Point,
+		{0, 0, 0},
+		1000.f,
+		0.f,
+		{1, 0.001, 0.0001},
+		0,
+		0
+	};
+	lights_.push_back(new Light);
+	lights_[0]->set_light_info(test_light);
+	for (auto& light : lights_)
+	{
+		objects_.push_back(light);
+	}
+	CreateLightsShaderVariable(device, command_list);
+
+	// 재질 생성
+	Material* test_material = new Material;
+	test_material->set_material_info(MaterialInfo
+		{
+			0.2,
+		{1,1,1},
+			100
+		});
+	test_material->CreateShaderVariable(device, command_list);
+	materials_.push_back(test_material);
+
 	// 오브젝트 생성
 	CubeMesh* cube_mesh = new CubeMesh(device, command_list);
+	cube_mesh->SetMaterialAtSubMesh(0, test_material);
 	StaticMeshObject* cube = new StaticMeshObject(cube_mesh);
 	cube->set_position_vector(0, 20, 100);
 	objects_.push_back(cube);
 
 	for (int i = 0; i < 10; ++i)
 	{
-		cube = new StaticMeshObject(cube_mesh);
-		cube->set_position_vector(i * 10 - 50, 10, 100);
-		objects_.push_back(cube);
+		for (int j = 0; j < 10; ++j)
+		{
+			for (int k = 0; k < 10; ++k)
+			{
+				cube = new StaticMeshObject(cube_mesh);
+				cube->set_position_vector(i * 10 - 50, k * 10 - 50, j * 10 + 5 - 50);
+				objects_.push_back(cube);
+			}
+		}
 	}
 
 }
@@ -52,22 +97,22 @@ void DefaultScene::CreateRootSignature(ID3D12Device* device)
 	D3D12_ROOT_PARAMETER d3d12_root_parameter[4];
 	d3d12_root_parameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	d3d12_root_parameter[0].Descriptor.ShaderRegister = 0; //Camera
-	d3d12_root_parameter[0].Descriptor.RegisterSpace = 0; // b0
+	d3d12_root_parameter[0].Descriptor.RegisterSpace = 0;  // b0
 	d3d12_root_parameter[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	d3d12_root_parameter[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
 	d3d12_root_parameter[1].Descriptor.ShaderRegister = 0; // StaticMeshObjectInfos
-	d3d12_root_parameter[1].Descriptor.RegisterSpace = 0; // t0
+	d3d12_root_parameter[1].Descriptor.RegisterSpace = 0;  // t0
 	d3d12_root_parameter[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	d3d12_root_parameter[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	d3d12_root_parameter[2].Descriptor.ShaderRegister = 0; //Lights
-	d3d12_root_parameter[2].Descriptor.RegisterSpace = 1; // b1
+	d3d12_root_parameter[2].Descriptor.ShaderRegister = 1; //Lights
+	d3d12_root_parameter[2].Descriptor.RegisterSpace = 0; // b1
 	d3d12_root_parameter[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	d3d12_root_parameter[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	d3d12_root_parameter[3].Descriptor.ShaderRegister = 0; //Material
-	d3d12_root_parameter[3].Descriptor.RegisterSpace = 2; // b2
+	d3d12_root_parameter[3].Descriptor.ShaderRegister = 2; //Material
+	d3d12_root_parameter[3].Descriptor.RegisterSpace = 0;  // b2
 	d3d12_root_parameter[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 
@@ -106,13 +151,8 @@ void DefaultScene::Render(ID3D12GraphicsCommandList* command_list)
 	camera_->SetViewportAndScissorRect(command_list);
 	camera_->UpdateShaderVariable(command_list);
 
-	//TODO: 현재 카메라 위치와 방향을 기준으로 유효한 조명들에 대해서 연산하도록 조명을 업데이트 해야한다.
-	// 점 조명: 조명이 감쇄되어 닿지 않을 거리라면 계산할 필요가 없다.
-	// 방향 조명: 실내에 경우 외부 방향조명은 필요없다.
-	// 스팟 조명: 조명 방향과 위치가 카메라에 반대라면 영향을 주지 않는다.
-	// 구현 방법: 카메라 절두체 컬링을 변형하여 활용하는 것을 생각해볼 수 있다. 
 	// light info set
-
+	UpdateLightsShaderVariable(command_list);
 
 	for (auto& shader : shaders_)
 	{
@@ -132,3 +172,28 @@ void DefaultScene::UpdateShaderRenderList()
 	}
 
 }
+
+void DefaultScene::CreateLightsShaderVariable(ID3D12Device* device, ID3D12GraphicsCommandList* command_list)
+{
+	UINT element_byte = ((sizeof(LightInfoPackage) + 255) & ~255); //256의 배수
+	d3d12_light_info_.Attach(CreateBufferResource(device, command_list, nullptr, element_byte));
+	d3d12_light_info_->Map(0, nullptr, (void**)&mapped_light_info_);
+}
+
+void DefaultScene::UpdateLightsShaderVariable(ID3D12GraphicsCommandList* command_list)
+{
+	//TODO: 카메라 위치와 방향을 기준으로 유효한 조명들만 추가하도록 구현.
+	// 현재는 씬의 모든 조명을 추가하는 방식
+	for (int i = 0; i < lights_.size(); ++i)
+	{
+		memcpy(&mapped_light_info_->lights[i], &lights_[i]->light_info(), sizeof(LightInfo));
+	}
+
+	memcpy(&mapped_light_info_->global_ambient, &global_ambient_, sizeof(XMFLOAT4));
+
+	int light_count = lights_.size();
+	memcpy(&mapped_light_info_->light_count, &light_count, sizeof(int));
+
+	command_list->SetGraphicsRootConstantBufferView((int)RootSignatureIndex::Light, d3d12_light_info_->GetGPUVirtualAddress());
+}
+

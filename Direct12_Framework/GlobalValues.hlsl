@@ -18,17 +18,18 @@ StructuredBuffer<InstancedGameObjectInfo> g_instanced_game_object_infos : regist
 
 struct Light
 {
-    int type; // 0 == point, 1 == direction, 2 == spot
     float4 diffuse;
     float4 ambient;
     float4 specular;
     float3 position;
+    int type; // 0 == point, 1 == direction, 2 == spot
     float3 direction;
     float range;
     float falloff;
     float3 attenuation; // x == 0, y == 1, z == 2 각 원소가 0,1,2에 해당하는 값 내적으로 간단하게 연산 가능
     float theta; // cos(theta) 값
     float phi; // cos(phi) 값
+    float2 pad; // hlsl 패킹에 의한 더미값
 };
 
 #define MAX_LIGHT 16

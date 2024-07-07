@@ -9,6 +9,7 @@ class StaticMeshObject :
 public:
     StaticMeshObject() {}
     StaticMeshObject(StaticMesh* mesh); 
+    ~StaticMeshObject() {}
 
     void Update(float elapsed_time);
 
