@@ -63,6 +63,8 @@ void Camera::Update(float elapsed_time)
 	IATest::Instance()->set_action_value(0, 0, 0);
 
 	UpdateViewMatrix();
+
+	GenerateBoundingViewFrustum();
 }
 
 void Camera::CreateViewMatrix(const XMFLOAT3& camera_target_position)
@@ -94,4 +96,18 @@ void Camera::UpdateViewMatrix()
 void Camera::CreateProjectionMatrix(float near_plane_distance, float far_plane_distance, float aspect_ratio, float fov_angle)
 {
 	projection_matrix_ = Matrix4x4::PerspectiveFovLH(XMConvertToRadians(fov_angle), aspect_ratio, near_plane_distance, far_plane_distance);
+}
+
+void Camera::GenerateBoundingViewFrustum()
+{
+	bounding_view_frustum_.CreateFromMatrix(bounding_view_frustum_, XMLoadFloat4x4(&projection_matrix_));
+
+	XMMATRIX invers_view = XMMatrixInverse(nullptr, XMLoadFloat4x4(&view_matrix_));
+
+	bounding_view_frustum_.Transform(bounding_view_frustum_, invers_view);
+}
+
+bool Camera::IsInViewFrustum(const BoundingOrientedBox& obb)
+{
+	return bounding_view_frustum_.Intersects(obb);
 }

@@ -18,7 +18,7 @@ float4 PointLight(int light_index, float3 vertex_position, float3 vertex_normal,
     float distance_vertex_to_light = length(vertex_to_light);
     vertex_to_light = normalize(vertex_to_light);
     // Laf = 1 / dot(attenuation, float3(1, d, d^2))
-    float attenuation_factor = 1.f;// / dot(g_lights[light_index].attenuation, float3(1.f, distance_vertex_to_light, distance_vertex_to_light * distance_vertex_to_light));
+    float attenuation_factor = 1.f / dot(g_lights[light_index].attenuation, float3(1.f, distance_vertex_to_light, distance_vertex_to_light * distance_vertex_to_light));
     // A = Ma * (Ga + La * Laf) 이지만 Ga * Ma의 연산은 Lighting 함수에서 최종적으로 함
     // 즉, Ma * (La * Laf) 임
     ambient_color = albedo_color * g_ambient_factor * (g_lights[light_index].ambient * attenuation_factor);

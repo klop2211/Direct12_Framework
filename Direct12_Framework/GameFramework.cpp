@@ -45,7 +45,7 @@ void GameFramework::Initialize()
 
 void GameFramework::FrameAdvance()
 {
-	timer_->Tick(60.f);
+	timer_->Tick(0.f);
 
 	//입력 처리
 	ProcessInput();
@@ -56,6 +56,8 @@ void GameFramework::FrameAdvance()
 	//렌더 사전 준비
 	HRESULT hresult = d3d12_command_allocator_->Reset();
 	hresult = d3d12_command_list_->Reset(d3d12_command_allocator_.Get(), NULL);
+
+	//TODO: 여기에 인스턴싱 버퍼를 다시 만들어야하는지 검사하는 함수를 구현하여 넣자
 
 	D3D12_RESOURCE_BARRIER d3d12_resource_barrier;
 	::ZeroMemory(&d3d12_resource_barrier, sizeof(D3D12_RESOURCE_BARRIER));

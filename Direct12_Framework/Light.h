@@ -29,7 +29,7 @@ struct LightInfoPackage
 };
 
 // 조명 기초클래스 
-// 이 클래스를 상속받아 점 조명, 방향 조명등을 구현
+//TODO: 이 클래스를 상속받아 점 조명, 방향 조명등을 구현
 class Light :
     public Object
 {

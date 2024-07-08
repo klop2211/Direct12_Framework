@@ -31,7 +31,7 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	// 朝五虞 持失
 	camera_ = new Camera;
 	camera_->CreateViewMatrix(XMFLOAT3(0, 0, 1));
-	camera_->CreateProjectionMatrix(1, 5000, float(float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT)), 40);
+	camera_->CreateProjectionMatrix(1, 1000, float(float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT)), 40);
 	camera_->CreateShaderVariable(device, command_list);
 	objects_.push_back(camera_);
 
@@ -77,14 +77,14 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	cube->set_position_vector(0, 20, 100);
 	objects_.push_back(cube);
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		for (int j = 0; j < 10; ++j)
 		{
-			for (int k = 0; k < 10; ++k)
+			for (int k = 0; k < 100; ++k)
 			{
 				cube = new StaticMeshObject(cube_mesh);
-				cube->set_position_vector(i * 10 - 50, k * 10 - 50, j * 10 + 5 - 50);
+				cube->set_position_vector(i * 10 - 50 * 10, k * 10 - 50 * 10, j * 10 + 5 - 50);
 				objects_.push_back(cube);
 			}
 		}
@@ -138,6 +138,7 @@ void DefaultScene::Update(float elapsed_time)
 	for (auto& object : objects_)
 	{
 		object->Update(elapsed_time);
+		object->UpdateWorldMatrix();
 	}
 }
 
@@ -168,9 +169,17 @@ void DefaultScene::UpdateShaderRenderList()
 	}
 	for (auto& object : objects_)
 	{
-		object->SetMeshAtShader();
-	}
+		if (camera_->IsInViewFrustum(object->GetObjectObb()))
+		{
+			object->set_is_render_(true);
 
+			object->SetMeshAtShader();
+		}
+		else
+		{
+			object->set_is_render_(false);
+		}
+	}
 }
 
 void DefaultScene::CreateLightsShaderVariable(ID3D12Device* device, ID3D12GraphicsCommandList* command_list)

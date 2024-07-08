@@ -20,9 +20,13 @@ void StaticMesh::UpdateShaderVariables(ID3D12GraphicsCommandList* command_list)
 {
 	command_list->SetGraphicsRootShaderResourceView((int)RootSignatureIndex::StaticMesh, d3d12_instaced_object_info_->GetGPUVirtualAddress());
 	std::list<Object*>::iterator& it = object_list_.begin();
-	int i = 0;
-	for (; it != object_list_.end();  ++it, ++i)
+	instance_count_ = 0;
+	for (; it != object_list_.end();  ++it)
 	{
-		XMStoreFloat4x4(&mapped_instance_info_[i].world_matrix, XMMatrixTranspose(XMLoadFloat4x4(&(*it)->world_matrix())));
+		if ((*it)->is_render())
+		{
+			XMStoreFloat4x4(&mapped_instance_info_[instance_count_].world_matrix, XMMatrixTranspose(XMLoadFloat4x4(&(*it)->world_matrix())));
+			++instance_count_; 
+		}
 	}
 }

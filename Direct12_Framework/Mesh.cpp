@@ -18,7 +18,7 @@ Mesh::~Mesh()
 void Mesh::AddRef(Object* object)
 {
 	object_list_.push_back(object);
-	++instance_count_;
+	++reference_count_;
 }
 
 void Mesh::Release(Object* object)
@@ -26,8 +26,8 @@ void Mesh::Release(Object* object)
 	auto& target_it = std::find(object_list_.begin(), object_list_.end(), object);
 	object_list_.erase(target_it);
 
-	--instance_count_;
-	if (instance_count_ <= 0)
+	--reference_count_;
+	if (reference_count_ <= 0)
 	{
 		delete this;	
 	}

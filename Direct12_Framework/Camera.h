@@ -38,6 +38,10 @@ public:
 
 	void CreateProjectionMatrix(float near_plane_distance, float far_plane_distance, float aspect_ratio, float fov_angle);
 
+	void GenerateBoundingViewFrustum();
+
+	bool IsInViewFrustum(const BoundingOrientedBox& obb);
+
 protected:
 	XMFLOAT4X4 view_matrix_ = Matrix4x4::Identity();
 	XMFLOAT4X4 projection_matrix_ = Matrix4x4::Identity();
@@ -50,6 +54,8 @@ protected:
 
 	// 카메라가 월드상에서 바라보는 지점
 	XMFLOAT3 look_at_world_position_;
+
+	BoundingFrustum bounding_view_frustum_;
 
 };
 

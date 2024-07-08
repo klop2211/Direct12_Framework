@@ -12,4 +12,6 @@ CubeMesh::CubeMesh(ID3D12Device* device, ID3D12GraphicsCommandList* command_list
 	CreateShaderVariables(device, command_list);
 
 	shader_ = StaticMeshShader::Instance();
+
+	obb_ = BoundingOrientedBox(XMFLOAT3(0, 0, 0), XMFLOAT3(1, 1, 1), XMFLOAT4(0,0,0,1));
 }

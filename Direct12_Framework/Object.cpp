@@ -4,22 +4,22 @@
 
 XMFLOAT3 Object::position_vector() const
 {
-    return XMFLOAT3(world_matrix_._41, world_matrix_._42, world_matrix_._43);
+    return XMFLOAT3(transform_matrix_._41, transform_matrix_._42, transform_matrix_._43);
 }
 
 XMFLOAT3 Object::look_vector() const
 {
-    return XMFLOAT3(world_matrix_._31, world_matrix_._32, world_matrix_._33);
+    return XMFLOAT3(transform_matrix_._31, transform_matrix_._32, transform_matrix_._33);
 }
 
 XMFLOAT3 Object::right_vector() const
 {
-    return XMFLOAT3(world_matrix_._11, world_matrix_._12, world_matrix_._13);
+    return XMFLOAT3(transform_matrix_._11, transform_matrix_._12, transform_matrix_._13);
 }
 
 XMFLOAT3 Object::up_vector() const
 {
-    return XMFLOAT3(world_matrix_._21, world_matrix_._22, world_matrix_._23);
+    return XMFLOAT3(transform_matrix_._21, transform_matrix_._22, transform_matrix_._23);
 }
 
 void Object::AddRotate(float pitch, float yaw, float roll)
@@ -41,6 +41,31 @@ void Object::SetMeshAtShader()
     if (mesh_)
     {
         mesh_->SetMeshAtShader();
+    }
+}
+
+BoundingOrientedBox Object::GetObjectObb() const
+{
+    if (mesh_)
+    {
+        BoundingOrientedBox temp;
+        mesh_->obb().Transform(temp, XMLoadFloat4x4(&world_matrix_));
+        return temp;
+    }
+    return BoundingOrientedBox();
+}
+
+void Object::UpdateWorldMatrix()
+{
+    world_matrix_ = parent_ ? transform_matrix_ * parent_->world_matrix_ : transform_matrix_;
+
+    if (child_)
+    {
+        child_->UpdateWorldMatrix();
+    }
+    if (sibling_)
+    {
+        sibling_->UpdateWorldMatrix();
     }
 }
 
@@ -88,26 +113,30 @@ void Object::set_up_vector(const XMFLOAT3& value)
 
 void Object::set_position_vector(float x, float y, float z)
 {
-    world_matrix_._41 = x, world_matrix_._42 = y, world_matrix_._43 = z;
+    transform_matrix_._41 = x, transform_matrix_._42 = y, transform_matrix_._43 = z;
 }
 
 void Object::set_look_vector(float x, float y, float z)
 {
-    world_matrix_._31 = x, world_matrix_._32 = y, world_matrix_._33 = z;
+    transform_matrix_._31 = x, transform_matrix_._32 = y, transform_matrix_._33 = z;
 }
 
 void Object::set_right_vector(float x, float y, float z)
 {
-    world_matrix_._11 = x, world_matrix_._12 = y, world_matrix_._13 = z;
+    transform_matrix_._11 = x, transform_matrix_._12 = y, transform_matrix_._13 = z;
 }
 
 void Object::set_up_vector(float x, float y, float z)
 {
-    world_matrix_._21 = x, world_matrix_._22 = y, world_matrix_._23 = z;
+    transform_matrix_._21 = x, transform_matrix_._22 = y, transform_matrix_._23 = z;
 }
 
 void Object::set_mesh(Mesh* value)
 {
+    if (mesh_)
+    {
+        mesh_->Release(this);
+    }
     value->AddRef(this);
     mesh_ = value;
 }

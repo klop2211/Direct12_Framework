@@ -18,6 +18,9 @@ public:
 	//setter
 	void set_shader(Shader* value) { shader_ = value; }
 
+	//getter
+	BoundingOrientedBox obb() const { return obb_; }
+
 	virtual void CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* command_list) = 0;
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* command_list) = 0;
 
@@ -34,7 +37,7 @@ public:
 protected:
 	//TODO: 적절한 개수가 몇일 지 생각하기
 	// Create 되는 instance info의 개수, 이 수를 count가 넘으면 쉐이더 value를 다시 생성해야한다.
-	unsigned int instance_info_count_ = 10000;
+	unsigned int instance_info_count_ = 110000;
 
 	// 이 메쉬가 그려져야 하는 갯수
 	unsigned int instance_count_ = 0;
@@ -50,5 +53,12 @@ protected:
 
 	// 이 메쉬를 그리는 셰이더
 	Shader* shader_ = nullptr;
+
+	//이 메쉬의 OBB
+	BoundingOrientedBox obb_;
+
+private:
+	int reference_count_ = 0;
+
 };
 
