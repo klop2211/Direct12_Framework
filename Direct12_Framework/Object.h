@@ -44,6 +44,15 @@ public:
 
 	void UpdateWorldMatrix();
 
+	// 계층구조를 추가하는 함수
+	void AddChild(Object* value);
+	void AddSibling(Object* value);
+
+	// 계층구조를 순회하며 해당되는 오브젝트를 검색
+	Object* FindObjectFrame(const std::string& name);
+	Object* FindObjectFrame(Object* object);
+
+
 protected:
 	// 실제 회전이 이루어지는 함수
 	void Rotate(float pitch, float yaw, float roll);

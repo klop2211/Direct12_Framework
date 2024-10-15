@@ -1,7 +1,7 @@
 #pragma once
 #include "Object.h"
 
-enum class LightType { Point = 0, Direction, Spot };
+enum class LightType { Point = 0, Directional, Spot };
 
 // hlsl 상수버퍼 패킹에 유의할 것
 struct LightInfo

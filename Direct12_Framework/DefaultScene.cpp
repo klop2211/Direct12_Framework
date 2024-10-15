@@ -42,17 +42,35 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 		{1,1,1,1},
 		{1,1,1,1},
 		{1,1,1,1},
-		{0, 0, 0},
-		(int)LightType::Point,
-		{0, 0, 0},
-		1000.f,
+		{0, 10, 10},
+		(int)LightType::Directional,
+		{0, -1, 0},
+		100.f,
 		0.f,
-		{1, 0.001, 0.0001},
+		{1, 0.01, 0.001},
 		0,
 		0
 	};
 	lights_.push_back(new Light);
+	lights_.push_back(new Light);
+	lights_.push_back(new Light);
+	lights_.push_back(new Light);
 	lights_[0]->set_light_info(test_light);
+	test_light = {
+		{1,1,1,1},
+		{1,1,1,1},
+		{1,1,1,1},
+		{0, 10, 10},
+		(int)LightType::Point,
+		{0, 0, 0},
+		100.f,
+		0.f,
+		{1, 0.01, 0.001},
+		0,
+		0
+	};
+	lights_[1]->set_light_info(test_light);
+
 	for (auto& light : lights_)
 	{
 		objects_.push_back(light);
@@ -63,9 +81,9 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	Material* test_material = new Material;
 	test_material->set_material_info(MaterialInfo
 		{
-			0.2,
-		{1,1,1},
-			100
+			0.1,
+		{0.8,0.8,0.8},
+			400
 		});
 	test_material->CreateShaderVariable(device, command_list);
 	materials_.push_back(test_material);
@@ -74,19 +92,16 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	CubeMesh* cube_mesh = new CubeMesh(device, command_list);
 	cube_mesh->SetMaterialAtSubMesh(0, test_material);
 	StaticMeshObject* cube = new StaticMeshObject(cube_mesh);
-	cube->set_position_vector(0, 20, 100);
+	cube->set_position_vector(0, 20, 20);
 	objects_.push_back(cube);
 
 	for (int i = 0; i < 100; ++i)
 	{
-		for (int j = 0; j < 10; ++j)
+		for (int j = 0; j < 100; ++j)
 		{
-			for (int k = 0; k < 100; ++k)
-			{
-				cube = new StaticMeshObject(cube_mesh);
-				cube->set_position_vector(i * 10 - 50 * 10, k * 10 - 50 * 10, j * 10 + 5 - 50);
-				objects_.push_back(cube);
-			}
+			cube = new StaticMeshObject(cube_mesh);
+			cube->set_position_vector(i * 2 - 100, -2, j * 2 - 100);
+			objects_.push_back(cube);
 		}
 	}
 
@@ -169,6 +184,7 @@ void DefaultScene::UpdateShaderRenderList()
 	}
 	for (auto& object : objects_)
 	{
+		// 카메라 절두체 컬링
 		if (camera_->IsInViewFrustum(object->GetObjectObb()))
 		{
 			object->set_is_render_(true);

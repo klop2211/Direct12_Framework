@@ -69,6 +69,64 @@ void Object::UpdateWorldMatrix()
     }
 }
 
+void Object::AddChild(Object* value)
+{
+    value->parent_ = this;
+
+    if (child_)
+    {
+        child_->sibling_ = child_;
+    }
+
+    child_ = value;
+}
+
+void Object::AddSibling(Object* value)
+{
+    value->parent_ = parent_;
+
+    if (sibling_)
+    {
+        sibling_->sibling_ = sibling_;
+    }
+
+    sibling_ = value;
+}
+
+Object* Object::FindObjectFrame(const std::string& name)
+{
+    if (name == name_)
+    {
+        return this;
+    }
+
+    if (child_)
+    {
+        return child_->FindObjectFrame(name);
+    }
+    if (sibling_)
+    {
+        return sibling_->FindObjectFrame(name);
+    }
+}
+
+Object* Object::FindObjectFrame(Object* object)
+{
+    if (object == this)
+    {
+        return this;
+    }
+
+    if (child_)
+    {
+        return child_->FindObjectFrame(object);
+    }
+    if (sibling_)
+    {
+        return sibling_->FindObjectFrame(object);
+    }
+}
+
 void Object::Rotate(float pitch, float yaw, float roll)
 {
     XMFLOAT3 x_axis{1,0,0}, y_axis{0,1,0}, z_axis{0,0,1};
