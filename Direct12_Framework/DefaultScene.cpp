@@ -38,31 +38,33 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	// 조명 생성
 	global_ambient_ = XMFLOAT4(0.1, 0.1, 0.1, 1);
 	lights_.reserve(kMaxLight);
-	LightInfo test_light{
-		{1,1,1,1},
-		{1,1,1,1},
-		{1,1,1,1},
-		{0, 10, 10},
-		(int)LightType::Directional,
+	LightInfo test_light;
+	test_light = {
+		{0.1, 0.1, 0.1, 1.0f},
+		{0.1, 0.1, 0.1, 1.0f},
+		{0.1, 0.1, 0.1, 1.0f},
+		{0, 10, 0},
+		(int)LightType::Spot,
 		{0, -1, 0},
-		100.f,
-		0.f,
+		20.f,
+		10.f,
 		{1, 0.01, 0.001},
-		0,
-		0
+		(float)cos(XMConvertToRadians(15.0f)),
+		(float)cos(XMConvertToRadians(45.0f))
 	};
 	lights_.push_back(new Light);
 	lights_.push_back(new Light);
 	lights_.push_back(new Light);
 	lights_.push_back(new Light);
 	lights_[0]->set_light_info(test_light);
+	
 	test_light = {
-		{1,1,1,1},
-		{1,1,1,1},
-		{1,1,1,1},
-		{0, 10, 10},
-		(int)LightType::Point,
-		{0, 0, 0},
+		{0.5,0.5,0.5,1},
+		{0.5,0.5,0.5,1},
+		{0.5,0.5,0.5,1},
+		{0, 20, 15},
+		(int)LightType::Directional,
+		{0,-1, 0},
 		100.f,
 		0.f,
 		{1, 0.01, 0.001},
@@ -70,6 +72,20 @@ void DefaultScene::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 		0
 	};
 	lights_[1]->set_light_info(test_light);
+	test_light = {
+		{0.1, 0.1, 0.1, 1.0f},
+		{0.1, 0.1, 0.1, 1.0f},
+		{0.1, 0.1, 0.1, 1.0f},
+		{0, 10, 10},
+		(int)LightType::Spot,
+		{0, -1, 0},
+		20.f,
+		10.f,
+		{1, 0.01, 0.001},
+		(float)cos(XMConvertToRadians(15.0f)),
+		(float)cos(XMConvertToRadians(35.0f))
+	};
+	lights_[2]->set_light_info(test_light);
 
 	for (auto& light : lights_)
 	{
