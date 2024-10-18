@@ -129,14 +129,17 @@
     <ClInclude Include="Camera.h">
       <Filter>Framework\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="IATest.h">
-      <Filter>TestClass</Filter>
-    </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Framework\Light</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IACameraMove.h">
+      <Filter>Framework\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="IACameraRotate.h">
+      <Filter>Framework\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -203,14 +206,17 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Framework\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="IATest.cpp">
-      <Filter>TestClass</Filter>
-    </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Framework\Light</Filter>
     </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IACameraMove.cpp">
+      <Filter>Framework\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="IACameraRotate.cpp">
+      <Filter>Framework\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

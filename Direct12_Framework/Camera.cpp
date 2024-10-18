@@ -2,7 +2,8 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "DefaultScene.h"
-#include "IATest.h"
+#include "IACameraRotate.h"
+#include "IACameraMove.h"
 
 Camera::Camera() : Object()
 {
@@ -58,9 +59,15 @@ void Camera::SetViewportAndScissorRect(ID3D12GraphicsCommandList* command_list)
 void Camera::Update(float elapsed_time)
 {
 	//TODO: 임시 카메라 조작을 추후 카메라를 상속받는 클래스로 구현
-	XMFLOAT3 temp = IATest::Instance()->action_value();
-	AddRotate(-temp.y, temp.x, 0);
-	IATest::Instance()->set_action_value(0, 0, 0);
+	XMFLOAT3 ia_value = IACameraRotate::Instance()->action_value();
+	AddRotate(-ia_value.y, ia_value.x, 0);
+	IACameraRotate::Instance()->set_action_value(0, 0, 0);
+
+	ia_value = IACameraMove::Instance()->action_value();
+	
+	// 초당 축별 이동량
+	float movement_amount = 30 * elapsed_time;
+	Move(ia_value.x * movement_amount, ia_value.y * movement_amount, ia_value.z * movement_amount);
 
 	UpdateViewMatrix();
 

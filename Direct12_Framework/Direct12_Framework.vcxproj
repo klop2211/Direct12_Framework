@@ -140,7 +140,8 @@
     <ClInclude Include="DefaultScene.h" />
     <ClInclude Include="Direct12_Framework.h" />
     <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="IATest.h" />
+    <ClInclude Include="IACameraMove.h" />
+    <ClInclude Include="IACameraRotate.h" />
     <ClInclude Include="IMCTest.h" />
     <ClInclude Include="InputAction.h" />
     <ClInclude Include="InputMappingContext.h" />
@@ -168,7 +169,8 @@
     <ClCompile Include="DefaultScene.cpp" />
     <ClCompile Include="Direct12_Framework.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="IATest.cpp" />
+    <ClCompile Include="IACameraMove.cpp" />
+    <ClCompile Include="IACameraRotate.cpp" />
     <ClCompile Include="IMCTest.cpp" />
     <ClCompile Include="InputAction.cpp" />
     <ClCompile Include="InputMappingContext.cpp" />

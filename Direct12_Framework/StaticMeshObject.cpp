@@ -2,7 +2,6 @@
 #include "StaticMeshObject.h"
 #include "StaticMesh.h"
 #include "Mesh.h"
-#include "IATest.h"
 
 StaticMeshObject::StaticMeshObject(StaticMesh* mesh)
 {

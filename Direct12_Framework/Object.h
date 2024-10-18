@@ -36,6 +36,13 @@ public:
 	// 오브젝트의 해당 값(degree)만큼 회전 추가
 	void AddRotate(float pitch, float yaw, float roll);
 
+	// 오브젝트를 해당 축 방향으로 이동(단, UP은 Y축을 따라 이동)
+	void Move(float right, float up, float forward);
+	void Move(const XMFLOAT3& value);
+	// 오브젝트를 앞으로(z축 방향) 이동
+	void MoveForward(float value);
+
+
 	// 메쉬가 사용하는 셰이더의 렌더리스트에 메쉬 set
 	void SetMeshAtShader();
 	

@@ -36,6 +36,22 @@ void Object::AddRotate(float pitch, float yaw, float roll)
     Rotate(pitch, yaw, roll);
 }
 
+void Object::Move(float right, float up, float forward)
+{    
+    const XMFLOAT3 y_axis{ 0,1,0 };
+    set_position_vector(position_vector() + right_vector() * right + y_axis * up + look_vector() * forward);
+}
+
+void Object::Move(const XMFLOAT3& value)
+{
+    Move(value.x, value.y, value.z);
+}
+
+void Object::MoveForward(float value)
+{
+    Move(0, 0, value);
+}
+
 void Object::SetMeshAtShader()
 {
     if (mesh_)
